@@ -28,7 +28,7 @@ func GenerateToken(username, password string) (string, error) {
 		},
 	}
 
-	tokenClaims := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	tokenClaims := jwt.NewWithClaims(jwt.SigningMethodHS512, claims)
 	token, err := tokenClaims.SignedString(jwtSecret)
 
 	return token, err

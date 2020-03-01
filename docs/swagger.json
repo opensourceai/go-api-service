@@ -11,16 +11,21 @@
     "paths": {
         "/auth/login": {
             "post": {
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Auth"
-                ],
-                "summary": "获取认证信息",
-                "parameters": [
-                    {
-                        "description": "user",
+              "security": [
+                {
+                  "ApiKeyAuth": []
+                }
+              ],
+              "produces": [
+                "application/json"
+              ],
+              "tags": [
+                "Auth"
+              ],
+              "summary": "获取认证信息",
+              "parameters": [
+                {
+                  "description": "user",
                         "name": "user",
                         "in": "body",
                         "required": true,
@@ -47,16 +52,21 @@
         },
         "/auth/register": {
             "post": {
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Auth"
-                ],
-                "summary": "添加用户",
-                "parameters": [
-                    {
-                        "description": "user",
+              "security": [
+                {
+                  "ApiKeyAuth": []
+                }
+              ],
+              "produces": [
+                "application/json"
+              ],
+              "tags": [
+                "Auth"
+              ],
+              "summary": "添加用户",
+              "parameters": [
+                {
+                  "description": "user",
                         "name": "user",
                         "in": "body",
                         "required": true,
@@ -81,22 +91,30 @@
                 }
             }
         },
-        "/router/v1/tags/import": {
-            "post": {
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "Import Image",
-                "parameters": [
-                    {
-                        "type": "file",
-                        "description": "Image File",
-                        "name": "image",
-                        "in": "formData",
-                        "required": true
-                    }
-                ],
-                "responses": {
+      "/auth/test": {
+        "post": {
+          "security": [
+            {
+              "ApiKeyAuth": []
+            }
+          ],
+          "produces": [
+            "application/json"
+          ],
+          "tags": [
+            "Auth"
+          ],
+          "summary": "auth测试",
+          "parameters": [
+            {
+              "type": "string",
+              "description": "string",
+              "name": "str",
+              "in": "query",
+              "required": true
+            }
+          ],
+          "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
@@ -186,15 +204,22 @@
             }
         },
         "router.auth": {
-            "type": "object",
-            "properties": {
-                "password": {
-                    "type": "string"
-                },
-                "username": {
-                    "type": "string"
-                }
+          "type": "object",
+          "properties": {
+            "password": {
+              "type": "string"
+            },
+            "username": {
+              "type": "string"
             }
+          }
         }
+    },
+  "securityDefinitions": {
+    "ApiKeyAuth": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "Header"
     }
+  }
 }

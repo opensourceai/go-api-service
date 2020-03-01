@@ -1,6 +1,7 @@
 package router
 
 import (
+	"github.com/opensourceai/go-api-service/middleware/jwt"
 	"github.com/opensourceai/go-api-service/models"
 	"github.com/opensourceai/go-api-service/pkg/logging"
 	"github.com/opensourceai/go-api-service/service"
@@ -30,6 +31,12 @@ func Auth(router *gin.Engine) {
 		auth.POST("/login", login)
 		auth.POST("/register", register)
 	}
+	group := router.Group("/auth")
+	group.Use(jwt.JWT())
+	{
+		group.POST("/test", authTest)
+
+	}
 }
 
 // @Summary 获取认证信息
@@ -38,6 +45,7 @@ func Auth(router *gin.Engine) {
 // @Param user body auth true "user"
 // @Success 200 {object} app.Response
 // @Failure 500 {object} app.Response
+// @Security ApiKeyAuth
 // @Router /auth/login [post]
 func login(c *gin.Context) {
 	user := auth{}
@@ -58,7 +66,7 @@ func login(c *gin.Context) {
 		appG.Response(http.StatusUnauthorized, e.ERROR_AUTH, nil)
 		return
 	}
-
+	// 生成token
 	token, err := util.GenerateToken(user.Username, user.Password)
 	if err != nil {
 		appG.Response(http.StatusInternalServerError, e.ERROR_AUTH_TOKEN, nil)
@@ -76,6 +84,7 @@ func login(c *gin.Context) {
 // @Param user body models.User true "user"
 // @Success 200 {object} app.Response
 // @Failure 500 {object} app.Response
+// @Security ApiKeyAuth
 // @Router /auth/register [post]
 func register(c *gin.Context) {
 	user := models.User{}
@@ -91,4 +100,20 @@ func register(c *gin.Context) {
 		return
 	}
 	appG.Response(http.StatusOK, e.SUCCESS, nil)
+}
+
+// @Summary auth测试
+// @Tags Auth
+// @Produce  json
+// @Param str query string true "string"
+// @Success 200 {object} app.Response
+// @Failure 500 {object} app.Response
+// @Security ApiKeyAuth
+// @Router /auth/test [post]
+func authTest(c *gin.Context) {
+	query := c.Query("str")
+
+	g := app.Gin{C: c}
+	g.Response(http.StatusOK, e.SUCCESS, "data:"+query+"(token认证通过！)")
+
 }

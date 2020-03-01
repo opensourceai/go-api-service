@@ -18,9 +18,10 @@ func JWT() gin.HandlerFunc {
 		var data interface{}
 
 		code = e.SUCCESS
-		token := c.Query("token")
+		// 获取头信息中的token
+		token := c.GetHeader("Authorization")
 		if token == "" {
-			code = e.INVALID_PARAMS
+			code = e.ERROR_AUTH_NOT_FOUND_TOKEN
 		} else {
 			_, err := util.ParseToken(token)
 			if err != nil {

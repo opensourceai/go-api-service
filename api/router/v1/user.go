@@ -4,6 +4,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func UserApi(r *gin.Engine) {
+func UserApi(router *gin.Engine) {
 
 }

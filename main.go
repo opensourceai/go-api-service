@@ -28,6 +28,11 @@ func init() {
 // @version 2.0
 // @description Tuboshu Service Api
 // @termsOfService https://github.com/opensourceai
+
+// @securityDefinitions.apikey ApiKeyAuth
+// @in Header
+// @name Authorization
+
 func main() {
 	gin.SetMode(setting.ServerSetting.RunMode)
 

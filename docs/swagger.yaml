@@ -74,7 +74,7 @@ paths:
         schema:
           $ref: '#/definitions/router.auth'
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
@@ -84,9 +84,11 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/app.Response'
+      security:
+        - ApiKeyAuth: []
       summary: 获取认证信息
       tags:
-      - Auth
+        - Auth
   /auth/register:
     post:
       parameters:
@@ -97,7 +99,7 @@ paths:
         schema:
           $ref: '#/definitions/models.User'
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
@@ -107,19 +109,21 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/app.Response'
+      security:
+        - ApiKeyAuth: []
       summary: 添加用户
       tags:
-      - Auth
-  /router/v1/tags/import:
+        - Auth
+  /auth/test:
     post:
       parameters:
-      - description: Image File
-        in: formData
-        name: image
-        required: true
-        type: file
+        - description: string
+          in: query
+          name: str
+          required: true
+          type: string
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
@@ -129,5 +133,14 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/app.Response'
-      summary: Import Image
+      security:
+        - ApiKeyAuth: []
+      summary: auth测试
+      tags:
+        - Auth
+securityDefinitions:
+  ApiKeyAuth:
+    in: Header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"
