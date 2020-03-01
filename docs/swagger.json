@@ -22,20 +22,20 @@
               "tags": [
                 "Auth"
               ],
-              "summary": "获取认证信息",
+              "summary": "获取认证信息11",
               "parameters": [
                 {
                   "description": "user",
-                        "name": "user",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/router.auth"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
+                  "name": "user",
+                  "in": "body",
+                  "required": true,
+                  "schema": {
+                    "$ref": "#/definitions/router.auth"
+                  }
+                }
+              ],
+              "responses": {
+                "200": {
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/app.Response"
@@ -67,28 +67,28 @@
               "parameters": [
                 {
                   "description": "user",
-                        "name": "user",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.User"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
+                  "name": "user",
+                  "in": "body",
+                  "required": true,
+                  "schema": {
+                    "$ref": "#/definitions/models.User"
+                  }
+                }
+              ],
+              "responses": {
+                "200": {
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/app.Response"
                         }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/app.Response"
-                        }
-                    }
+                },
+                "500": {
+                  "description": "Internal Server Error",
+                  "schema": {
+                    "$ref": "#/definitions/app.Response"
+                  }
                 }
+              }
             }
         },
       "/auth/test": {
@@ -115,16 +115,16 @@
             }
           ],
           "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/app.Response"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/app.Response"
+            "200": {
+              "description": "OK",
+              "schema": {
+                "$ref": "#/definitions/app.Response"
+              }
+            },
+            "500": {
+              "description": "Internal Server Error",
+              "schema": {
+                "$ref": "#/definitions/app.Response"
                         }
                     }
                 }

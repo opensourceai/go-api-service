@@ -9,8 +9,8 @@ import (
 	"github.com/gin-gonic/gin"
 	// swagger
 	_ "github.com/opensourceai/go-api-service/docs"
+	swaggerFiles "github.com/swaggo/files"
 	"github.com/swaggo/gin-swagger"
-	"github.com/swaggo/gin-swagger/swaggerFiles"
 
 	"github.com/opensourceai/go-api-service/api/router"
 	"github.com/opensourceai/go-api-service/pkg/export"
@@ -28,7 +28,8 @@ func InitRouter() *gin.Engine {
 	r.StaticFS("/upload/images", http.Dir(upload.GetImageFullPath()))
 	r.StaticFS("/qrcode", http.Dir(qrcode.GetQrCodeFullPath()))
 	// swagger
-	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	url := ginSwagger.URL("http://localhost:8000/swagger/doc.json")
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))
 
 	// 认证
 	router.Auth(r)

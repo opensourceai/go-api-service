@@ -74,7 +74,7 @@ paths:
         schema:
           $ref: '#/definitions/router.auth'
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
@@ -86,7 +86,7 @@ paths:
             $ref: '#/definitions/app.Response'
       security:
         - ApiKeyAuth: []
-      summary: 获取认证信息
+      summary: 获取认证信息11
       tags:
         - Auth
   /auth/register:
