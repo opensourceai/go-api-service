@@ -1,7 +1,6 @@
 package mysql
 
 import (
-	"fmt"
 	"github.com/jinzhu/gorm"
 	"github.com/opensourceai/go-api-service/models"
 	"github.com/pkg/errors"
@@ -10,10 +9,8 @@ import (
 type UserDaoImpl struct{}
 
 func (u UserDaoImpl) Add(user *models.User) error {
-	fmt.Println(user)
-	// 防止主键ID人为更新
+	// 防止主键ID被人为更新
 	user.ID = 0
-
 	db.Create(user)
 	return nil
 }

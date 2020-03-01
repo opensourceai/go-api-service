@@ -49,6 +49,13 @@ definitions:
         description: 网站
         type: string
     type: object
+  router.auth:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    type: object
 info:
   contact: {}
   description: Tuboshu Service Api
@@ -57,19 +64,15 @@ info:
   title: Tuboshu Service Api
   version: "2.0"
 paths:
-  /auth:
-    get:
+  /auth/login:
+    post:
       parameters:
-      - description: userName
-        in: query
-        name: username
+      - description: user
+        in: body
+        name: user
         required: true
-        type: string
-      - description: password
-        in: query
-        name: password
-        required: true
-        type: string
+        schema:
+          $ref: '#/definitions/router.auth'
       produces:
       - application/json
       responses:
@@ -82,27 +85,9 @@ paths:
           schema:
             $ref: '#/definitions/app.Response'
       summary: 获取认证信息
-  /router/v1/tags/import:
-    post:
-      parameters:
-      - description: Image File
-        in: formData
-        name: image
-        required: true
-        type: file
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/app.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/app.Response'
-      summary: Import Image
-  /v1/user/register:
+      tags:
+      - Auth
+  /auth/register:
     post:
       parameters:
       - description: user
@@ -123,4 +108,26 @@ paths:
           schema:
             $ref: '#/definitions/app.Response'
       summary: 添加用户
+      tags:
+      - Auth
+  /router/v1/tags/import:
+    post:
+      parameters:
+      - description: Image File
+        in: formData
+        name: image
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/app.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/app.Response'
+      summary: Import Image
 swagger: "2.0"
