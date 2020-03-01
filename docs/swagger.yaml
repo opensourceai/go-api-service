@@ -8,6 +8,47 @@ definitions:
       msg:
         type: string
     type: object
+  models.User:
+    properties:
+      avatar_src:
+        description: 头像地址
+        type: string
+      company:
+        description: 公司
+        type: string
+      created_on:
+        type: integer
+      deleted_on:
+        type: integer
+      description:
+        description: 描述
+        type: string
+      email:
+        description: 电子邮件
+        type: string
+      id:
+        type: integer
+      modified_on:
+        type: integer
+      name:
+        description: 昵称
+        type: string
+      password:
+        description: 密码
+        type: string
+      position:
+        description: 职位
+        type: string
+      sex:
+        description: 性别
+        type: integer
+      username:
+        description: 用户名
+        type: string
+      web_site:
+        description: 网站
+        type: string
+    type: object
 info:
   contact: {}
   description: Tuboshu Service Api
@@ -36,6 +77,27 @@ paths:
           schema:
             $ref: '#/definitions/app.Response'
       summary: Import Image
+  /api/v1/user:
+    post:
+      parameters:
+      - description: user
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/app.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/app.Response'
+      summary: 添加用户
   /auth:
     get:
       parameters:
@@ -60,5 +122,5 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/app.Response'
-      summary: Get Auth
+      summary: 获取认证信息
 swagger: "2.0"

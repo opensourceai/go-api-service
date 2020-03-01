@@ -1,6 +1,7 @@
 package jwt
 
 import (
+	"github.com/opensourceai/go-api-service/pkg/app"
 	"net/http"
 
 	"github.com/dgrijalva/jwt-go"
@@ -32,13 +33,15 @@ func JWT() gin.HandlerFunc {
 			}
 		}
 
-		if code != e.SUCCESS {
-			c.JSON(http.StatusUnauthorized, gin.H{
-				"code": code,
-				"msg":  e.GetMsg(code),
-				"data": data,
-			})
+		//c.JSON(http.StatusUnauthorized, gin.H{
+		//	"code": code,
+		//	"msg":  e.GetMsg(code),
+		//	"data": data,
+		//}
 
+		if code != e.SUCCESS {
+			g := app.Gin{c}
+			g.Response(http.StatusUnauthorized, code, data)
 			c.Abort()
 			return
 		}

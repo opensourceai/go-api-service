@@ -17,6 +17,10 @@ func init() {
 	authDao = new(mysql.AuthDaoImpl)
 }
 
+type AuthService interface {
+	Check() (bool, error)
+}
+
 func (a *Auth) Check() (bool, error) {
 	return authDao.CheckAuth(a.Username, a.Password)
 }
