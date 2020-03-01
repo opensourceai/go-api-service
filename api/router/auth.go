@@ -1,4 +1,4 @@
-package api
+package router
 
 import (
 	"github.com/opensourceai/go-api-service/service"
@@ -64,42 +64,43 @@ func GetAuth(c *gin.Context) {
 // @Failure 500 {object} app.Response
 // @Router /auth [get]
 func Auth(router *gin.Engine) {
-	router.GET("/auth", func(c *gin.Context) {
-		appG := app.Gin{C: c}
-		valid := validation.Validation{}
+	router.GET("/auth", login)
+}
+func login(c *gin.Context) {
+	appG := app.Gin{C: c}
+	valid := validation.Validation{}
 
-		username := c.Query("username")
-		password := c.Query("password")
+	username := c.Query("username")
+	password := c.Query("password")
 
-		a := auth{Username: username, Password: password}
-		ok, _ := valid.Valid(&a)
+	a := auth{Username: username, Password: password}
+	ok, _ := valid.Valid(&a)
 
-		if !ok {
-			app.MarkErrors(valid.Errors)
-			appG.Response(http.StatusBadRequest, e.INVALID_PARAMS, nil)
-			return
-		}
+	if !ok {
+		app.MarkErrors(valid.Errors)
+		appG.Response(http.StatusBadRequest, e.INVALID_PARAMS, nil)
+		return
+	}
 
-		authService := service.Auth{Username: username, Password: password}
-		isExist, err := authService.Check()
-		if err != nil {
-			appG.Response(http.StatusInternalServerError, e.ERROR_AUTH_CHECK_TOKEN_FAIL, nil)
-			return
-		}
+	authService := service.Auth{Username: username, Password: password}
+	isExist, err := authService.Check()
+	if err != nil {
+		appG.Response(http.StatusInternalServerError, e.ERROR_AUTH_CHECK_TOKEN_FAIL, nil)
+		return
+	}
 
-		if !isExist {
-			appG.Response(http.StatusUnauthorized, e.ERROR_AUTH, nil)
-			return
-		}
+	if !isExist {
+		appG.Response(http.StatusUnauthorized, e.ERROR_AUTH, nil)
+		return
+	}
 
-		token, err := util.GenerateToken(username, password)
-		if err != nil {
-			appG.Response(http.StatusInternalServerError, e.ERROR_AUTH_TOKEN, nil)
-			return
-		}
+	token, err := util.GenerateToken(username, password)
+	if err != nil {
+		appG.Response(http.StatusInternalServerError, e.ERROR_AUTH_TOKEN, nil)
+		return
+	}
 
-		appG.Response(http.StatusOK, e.SUCCESS, map[string]string{
-			"token": token,
-		})
+	appG.Response(http.StatusOK, e.SUCCESS, map[string]string{
+		"token": token,
 	})
 }

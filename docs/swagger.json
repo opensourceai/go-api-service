@@ -9,7 +9,45 @@
         "version": "2.0"
     },
     "paths": {
-        "/api/v1/tags/import": {
+        "/auth": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "获取认证信息",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "userName",
+                        "name": "username",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "password",
+                        "name": "password",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/app.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/app.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/router/v1/tags/import": {
             "post": {
                 "produces": [
                     "application/json"
@@ -40,7 +78,7 @@
                 }
             }
         },
-        "/api/v1/user": {
+        "/v1/user/register": {
             "post": {
                 "produces": [
                     "application/json"
@@ -55,44 +93,6 @@
                         "schema": {
                             "$ref": "#/definitions/models.User"
                         }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/app.Response"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/app.Response"
-                        }
-                    }
-                }
-            }
-        },
-        "/auth": {
-            "get": {
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "获取认证信息",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "userName",
-                        "name": "username",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "password",
-                        "name": "password",
-                        "in": "query",
-                        "required": true
                     }
                 ],
                 "responses": {

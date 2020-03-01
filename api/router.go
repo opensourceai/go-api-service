@@ -1,8 +1,9 @@
-package routers
+package api
 
 import (
+	v1 "github.com/opensourceai/go-api-service/api/router/v1"
 	"github.com/opensourceai/go-api-service/middleware/jwt"
-	v1 "github.com/opensourceai/go-api-service/routers/api/v1"
+	"github.com/opensourceai/go-api-service/pkg/setting"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -11,10 +12,10 @@ import (
 	"github.com/swaggo/gin-swagger"
 	"github.com/swaggo/gin-swagger/swaggerFiles"
 
+	"github.com/opensourceai/go-api-service/api/router"
 	"github.com/opensourceai/go-api-service/pkg/export"
 	"github.com/opensourceai/go-api-service/pkg/qrcode"
 	"github.com/opensourceai/go-api-service/pkg/upload"
-	"github.com/opensourceai/go-api-service/routers/api"
 )
 
 // InitRouter initialize routing information
@@ -27,20 +28,24 @@ func InitRouter() *gin.Engine {
 	r.StaticFS("/upload/images", http.Dir(upload.GetImageFullPath()))
 	r.StaticFS("/qrcode", http.Dir(qrcode.GetQrCodeFullPath()))
 
-	//r.GET("/auth", api.GetAuth)
+	//r.GET("/auth", router.GetAuth)
 	// swagger
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-	r.POST("/upload", api.UploadImage)
+	r.POST("/upload", router.UploadImage)
 
 	// 认证
-	api.Auth(r)
+	router.Auth(r)
 
-	// 添加全局token认证中间件
-	r.Use(jwt.JWT())
+	//r.Use(jwt.JWT())
+	if setting.ServerSetting.RunMode == "prod" {
+		// 添加全局token认证中间件
+		r.Use(jwt.JWT())
+	}
+
 	// 用户
 	v1.UserApi(r)
 
-	//apiv1 := r.Group("/api/v1")
+	//apiv1 := r.Group("/router/v1")
 	//apiv1.Use(jwt.JWT())
 	//{
 	//
