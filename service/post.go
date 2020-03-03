@@ -18,8 +18,7 @@ func init() {
 	postDao = new(mysql.PostDaoImpl)
 }
 func (PostServiceImpl) DeletePost(ids ...uint) (err error) {
-
-	panic("implement me")
+	return postDao.DeleteByIds(ids...)
 }
 
 func (PostServiceImpl) AddPost(p *models.Post) (err error) {

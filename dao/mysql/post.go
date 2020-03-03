@@ -24,7 +24,7 @@ func (PostDaoImpl) DeleteByIds(ids ...uint) (err error) {
 	post := models.Post{}
 	// 查询帖子id是否存在
 	for _, id := range ids {
-		if err = db.Where("id = ?", id).First(&post).Error; err != nil {
+		if err = db.Where("id = ? and deleted_on = ?", id, 0).First(&post).Error; err != nil {
 			return
 		}
 	}
