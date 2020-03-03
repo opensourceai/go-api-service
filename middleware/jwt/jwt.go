@@ -1,6 +1,7 @@
 package jwt
 
 import (
+	"fmt"
 	"github.com/opensourceai/go-api-service/pkg/app"
 	"net/http"
 
@@ -16,14 +17,15 @@ func JWT() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var code int
 		var data interface{}
-
+		var claims *util.Claims
+		var err error
 		code = e.SUCCESS
 		// 获取头信息中的token
 		token := c.GetHeader("Authorization")
 		if token == "" {
 			code = e.ERROR_AUTH_NOT_FOUND_TOKEN
 		} else {
-			_, err := util.ParseToken(token)
+			claims, err = util.ParseToken(token)
 			if err != nil {
 				switch err.(*jwt.ValidationError).Errors {
 				case jwt.ValidationErrorExpired:
@@ -32,19 +34,19 @@ func JWT() gin.HandlerFunc {
 					code = e.ERROR_AUTH_CHECK_TOKEN_FAIL
 				}
 			}
-		}
 
-		//c.JSON(http.StatusUnauthorized, gin.H{
-		//	"code": code,
-		//	"msg":  e.GetMsg(code),
-		//	"data": data,
-		//}
+		}
 
 		if code != e.SUCCESS {
 			g := app.Gin{c}
 			g.Response(http.StatusUnauthorized, code, data)
 			c.Abort()
 			return
+		}
+		if claims != nil {
+			//fmt.Println("username", claims.)
+			fmt.Println("claims", claims)
+			c.Set("username", claims.Username)
 		}
 
 		c.Next()

@@ -22,7 +22,7 @@
               "tags": [
                 "Auth"
               ],
-              "summary": "获取认证信息11",
+              "summary": "获取认证信息",
               "parameters": [
                 {
                   "description": "user",
@@ -36,18 +36,18 @@
               ],
               "responses": {
                 "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/app.Response"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/app.Response"
-                        }
-                    }
+                  "description": "OK",
+                  "schema": {
+                    "$ref": "#/definitions/app.Response"
+                  }
+                },
+                "500": {
+                  "description": "Internal Server Error",
+                  "schema": {
+                    "$ref": "#/definitions/app.Response"
+                  }
                 }
+              }
             }
         },
         "/auth/register": {
@@ -77,10 +77,10 @@
               ],
               "responses": {
                 "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/app.Response"
-                        }
+                  "description": "OK",
+                  "schema": {
+                    "$ref": "#/definitions/app.Response"
+                  }
                 },
                 "500": {
                   "description": "Internal Server Error",
@@ -92,7 +92,7 @@
             }
         },
       "/auth/test": {
-        "post": {
+        "get": {
           "security": [
             {
               "ApiKeyAuth": []
@@ -125,44 +125,153 @@
               "description": "Internal Server Error",
               "schema": {
                 "$ref": "#/definitions/app.Response"
-                        }
-                    }
-                }
+              }
             }
+          }
         }
+      },
+      "/v1/post": {
+        "post": {
+          "security": [
+            {
+              "ApiKeyAuth": []
+            }
+          ],
+          "produces": [
+            "application/json"
+          ],
+          "tags": [
+            "Post"
+          ],
+          "summary": "新增帖子",
+          "parameters": [
+            {
+              "description": "post",
+              "name": "post",
+              "in": "body",
+              "required": true,
+              "schema": {
+                "$ref": "#/definitions/models.Post"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "OK",
+              "schema": {
+                "$ref": "#/definitions/app.Response"
+              }
+            },
+            "500": {
+              "description": "Internal Server Error",
+              "schema": {
+                "$ref": "#/definitions/app.Response"
+              }
+            }
+          }
+        },
+        "delete": {
+          "security": [
+            {
+              "ApiKeyAuth": []
+            }
+          ],
+          "produces": [
+            "application/json"
+          ],
+          "tags": [
+            "Post"
+          ],
+          "summary": "删除用户帖子",
+          "parameters": [
+            {
+              "description": "postIds",
+              "name": "postIds",
+              "in": "body",
+              "required": true,
+              "schema": {
+                "$ref": "#/definitions/v1.postIds"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "OK",
+              "schema": {
+                "$ref": "#/definitions/app.Response"
+              }
+            },
+            "500": {
+              "description": "Internal Server Error",
+              "schema": {
+                "$ref": "#/definitions/app.Response"
+              }
+            }
+          }
+        }
+      }
     },
     "definitions": {
         "app.Response": {
-            "type": "object",
-            "properties": {
-                "code": {
-                    "type": "integer"
-                },
-                "data": {
-                    "type": "object"
-                },
-                "msg": {
-                    "type": "string"
-                }
+          "type": "object",
+          "properties": {
+            "code": {
+              "type": "integer"
+            },
+            "data": {
+              "type": "object"
+            },
+            "msg": {
+              "type": "string"
             }
+          }
         },
-        "models.User": {
-            "type": "object",
-            "properties": {
-                "avatar_src": {
-                    "description": "头像地址",
-                    "type": "string"
-                },
-                "company": {
-                    "description": "公司",
-                    "type": "string"
-                },
-                "created_on": {
-                    "type": "integer"
-                },
-                "deleted_on": {
-                    "type": "integer"
-                },
+      "models.Post": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string"
+          },
+          "created_on": {
+            "type": "integer"
+          },
+          "deleted_on": {
+            "type": "integer"
+          },
+          "id": {
+            "type": "integer"
+          },
+          "modified_on": {
+            "type": "integer"
+          },
+          "summary": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "user_id": {
+            "type": "integer"
+          }
+        }
+      },
+      "models.User": {
+        "type": "object",
+        "properties": {
+          "avatar_src": {
+            "description": "头像地址",
+            "type": "string"
+          },
+          "company": {
+            "description": "公司",
+            "type": "string"
+          },
+          "created_on": {
+            "type": "integer"
+          },
+          "deleted_on": {
+            "type": "integer"
+          },
                 "description": {
                     "description": "描述",
                     "type": "string"
@@ -187,33 +296,44 @@
                 },
                 "position": {
                     "description": "职位",
-                    "type": "string"
+                  "type": "string"
                 },
-                "sex": {
-                    "description": "性别",
-                    "type": "integer"
-                },
-                "username": {
-                    "description": "用户名",
-                    "type": "string"
-                },
-                "web_site": {
-                    "description": "网站",
-                    "type": "string"
-                }
-            }
-        },
-        "router.auth": {
-          "type": "object",
-          "properties": {
-            "password": {
-              "type": "string"
-            },
-            "username": {
-              "type": "string"
+          "sex": {
+            "description": "性别",
+            "type": "integer"
+          },
+          "username": {
+            "description": "用户名",
+            "type": "string"
+          },
+          "web_site": {
+            "description": "网站",
+            "type": "string"
+          }
+        }
+      },
+      "router.auth": {
+        "type": "object",
+        "properties": {
+          "password": {
+            "type": "string"
+          },
+          "username": {
+            "type": "string"
+          }
+        }
+      },
+      "v1.postIds": {
+        "type": "object",
+        "properties": {
+          "ids": {
+            "type": "array",
+            "items": {
+              "type": "integer"
             }
           }
         }
+      }
     },
   "securityDefinitions": {
     "ApiKeyAuth": {

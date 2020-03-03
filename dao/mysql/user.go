@@ -34,7 +34,7 @@ func (u UserDaoImpl) GetUserByUsername(username string) (err error, user models.
 
 }
 
-func (u UserDaoImpl) DeleteById(ids ...int) error {
+func (u UserDaoImpl) DeleteById(ids ...uint) error {
 	user := models.User{}
 	// 查询用户id是否存在
 	for _, id := range ids {

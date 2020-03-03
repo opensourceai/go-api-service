@@ -2,8 +2,6 @@ package api
 
 import (
 	v1 "github.com/opensourceai/go-api-service/api/router/v1"
-	"github.com/opensourceai/go-api-service/middleware/jwt"
-	"github.com/opensourceai/go-api-service/pkg/setting"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -35,13 +33,15 @@ func InitRouter() *gin.Engine {
 	router.Auth(r)
 
 	//r.Use(jwt.JWT())
-	if setting.ServerSetting.RunMode == "prod" {
-		// 添加全局token认证中间件
-		r.Use(jwt.JWT())
-	}
+	//if setting.ServerSetting.RunMode == "prod" {
+	//	// 添加全局token认证中间件
+	//	r.Use(jwt.JWT())
+	//}
 
 	// 用户
 	v1.UserApi(r)
+	// 帖子
+	v1.PostApi(r)
 
 	return r
 }

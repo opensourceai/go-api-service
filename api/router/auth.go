@@ -1,6 +1,7 @@
 package router
 
 import (
+	"fmt"
 	"github.com/opensourceai/go-api-service/middleware/jwt"
 	"github.com/opensourceai/go-api-service/models"
 	"github.com/opensourceai/go-api-service/pkg/logging"
@@ -8,7 +9,6 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-
 	"github.com/opensourceai/go-api-service/pkg/app"
 	"github.com/opensourceai/go-api-service/pkg/e"
 	"github.com/opensourceai/go-api-service/pkg/util"
@@ -34,7 +34,7 @@ func Auth(router *gin.Engine) {
 	group := router.Group("/auth")
 	group.Use(jwt.JWT())
 	{
-		group.POST("/test", authTest)
+		group.GET("/test", authTest)
 
 	}
 }
@@ -67,7 +67,7 @@ func login(c *gin.Context) {
 		return
 	}
 	// 生成token
-	token, err := util.GenerateToken(user.Username, user.Password)
+	token, err := util.GenerateToken(user.Username)
 	if err != nil {
 		appG.Response(http.StatusInternalServerError, e.ERROR_AUTH_TOKEN, nil)
 		return
@@ -109,11 +109,13 @@ func register(c *gin.Context) {
 // @Success 200 {object} app.Response
 // @Failure 500 {object} app.Response
 // @Security ApiKeyAuth
-// @Router /auth/test [post]
+// @Router /auth/test [get]
 func authTest(c *gin.Context) {
 	query := c.Query("str")
-
+	get, _ := c.Get("username")
+	fmt.Println("get", get)
+	str := fmt.Sprintf("%s", get)
 	g := app.Gin{C: c}
-	g.Response(http.StatusOK, e.SUCCESS, "data:"+query+"(token认证通过！)")
+	g.Response(http.StatusOK, e.SUCCESS, str+query)
 
 }
