@@ -82,35 +82,6 @@ definitions:
           type: integer
         type: array
     type: object
-  v1.postPage:
-    properties:
-      content:
-        type: string
-      created_on:
-        type: integer
-      deleted_on:
-        type: integer
-      id:
-        type: integer
-      modified_on:
-        type: integer
-      order_by:
-        description: 排序字段
-        type: string
-      page:
-        type: integer
-      size:
-        type: integer
-      sorter:
-        description: 升序, 降序
-        type: string
-      summary:
-        type: string
-      title:
-        type: string
-      user_id:
-        type: integer
-    type: object
 info:
   contact: {}
   description: Tuboshu Service Api
@@ -140,7 +111,7 @@ paths:
           schema:
             $ref: '#/definitions/app.Response'
       security:
-        - ApiKeyAuth: []
+      - ApiKeyAuth: []
       summary: 获取认证信息
       tags:
         - Auth
@@ -170,14 +141,13 @@ paths:
       tags:
         - Auth
   /auth/test:
-    post:
+    get:
       parameters:
-        - description: postPage
-          in: body
-          name: postPage
+        - description: string
+          in: query
+          name: str
           required: true
-          schema:
-            $ref: '#/definitions/v1.postPage'
+          type: string
       produces:
         - application/json
       responses:
@@ -191,6 +161,7 @@ paths:
             $ref: '#/definitions/app.Response'
       security:
         - ApiKeyAuth: []
+      summary: auth测试
       tags:
         - Auth
   /v1/post:

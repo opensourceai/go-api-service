@@ -46,8 +46,8 @@
                   "schema": {
                     "$ref": "#/definitions/app.Response"
                   }
-                    }
                 }
+              }
             }
         },
         "/auth/register": {
@@ -92,7 +92,7 @@
             }
         },
       "/auth/test": {
-        "post": {
+        "get": {
           "security": [
             {
               "ApiKeyAuth": []
@@ -104,15 +104,14 @@
           "tags": [
             "Auth"
           ],
+          "summary": "auth测试",
           "parameters": [
             {
-              "description": "postPage",
-              "name": "postPage",
-              "in": "body",
-              "required": true,
-              "schema": {
-                "$ref": "#/definitions/v1.postPage"
-              }
+              "type": "string",
+              "description": "string",
+              "name": "str",
+              "in": "query",
+              "required": true
             }
           ],
           "responses": {
@@ -263,16 +262,16 @@
             "description": "头像地址",
             "type": "string"
           },
-                "company": {
-                    "description": "公司",
-                    "type": "string"
-                },
-                "created_on": {
-                    "type": "integer"
-                },
-                "deleted_on": {
-                    "type": "integer"
-                },
+          "company": {
+            "description": "公司",
+            "type": "string"
+          },
+          "created_on": {
+            "type": "integer"
+          },
+          "deleted_on": {
+            "type": "integer"
+          },
                 "description": {
                     "description": "描述",
                     "type": "string"
@@ -297,16 +296,16 @@
                 },
                 "position": {
                     "description": "职位",
-                    "type": "string"
-                },
-                "sex": {
-                    "description": "性别",
-                    "type": "integer"
-                },
-                "username": {
-                  "description": "用户名",
                   "type": "string"
                 },
+          "sex": {
+            "description": "性别",
+            "type": "integer"
+          },
+          "username": {
+            "description": "用户名",
+            "type": "string"
+          },
           "web_site": {
             "description": "网站",
             "type": "string"
@@ -332,49 +331,6 @@
             "items": {
               "type": "integer"
             }
-          }
-        }
-      },
-      "v1.postPage": {
-        "type": "object",
-        "properties": {
-          "content": {
-            "type": "string"
-          },
-          "created_on": {
-            "type": "integer"
-          },
-          "deleted_on": {
-            "type": "integer"
-          },
-          "id": {
-            "type": "integer"
-          },
-          "modified_on": {
-            "type": "integer"
-          },
-          "order_by": {
-            "description": "排序字段",
-            "type": "string"
-          },
-          "page": {
-            "type": "integer"
-          },
-          "size": {
-            "type": "integer"
-          },
-          "sorter": {
-            "description": "升序, 降序",
-            "type": "string"
-          },
-          "summary": {
-            "type": "string"
-          },
-          "title": {
-            "type": "string"
-          },
-          "user_id": {
-            "type": "integer"
           }
         }
       }

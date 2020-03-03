@@ -31,14 +31,6 @@ type postPage struct {
 	page.Page
 }
 
-// @Summary
-// @Tags Auth
-// @Produce  json
-// @Param postPage body postPage true "postPage"
-// @Success 200 {object} app.Response
-// @Failure 500 {object} app.Response
-// @Security ApiKeyAuth
-// @Router /auth/test [post]
 func getPost(context *gin.Context) {
 
 }
