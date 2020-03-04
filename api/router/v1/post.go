@@ -2,6 +2,7 @@ package v1
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/jinzhu/gorm"
 	"github.com/opensourceai/go-api-service/middleware/jwt"
 	"github.com/opensourceai/go-api-service/models"
 	"github.com/opensourceai/go-api-service/pkg/app"
@@ -31,6 +32,16 @@ type postPage struct {
 	page.Page
 }
 
+
+// @Summary 获取用户自身帖子
+// @Tags Post
+// @Produce  json
+// @Param postIds body postIds true "postIds"
+// @Success 200 {object} app.Response
+// @Failure 500 {object} app.Response
+// @Security ApiKeyAuth
+// @Router /v1/post [get]
+
 func getPost(context *gin.Context) {
 
 }
@@ -58,6 +69,12 @@ func deletePost(context *gin.Context) {
 	//token := context.GetHeader("Authorization")
 
 	if err := postService.DeletePost(postIds.Ids...); err != nil {
+
+		if err == gorm.ErrRecordNotFound {
+			appG.Response(http.StatusBadRequest, e.ERROR_POST_NOT_EXIST, nil)
+			return
+		}
+
 		appG.Response(http.StatusBadRequest, e.ERROR, nil)
 		return
 	}
