@@ -32,6 +32,7 @@ type postPage struct {
 	page.Page
 }
 
+
 // @Summary 获取用户自身帖子
 // @Tags Post
 // @Produce  json
@@ -40,6 +41,7 @@ type postPage struct {
 // @Failure 500 {object} app.Response
 // @Security ApiKeyAuth
 // @Router /v1/post [get]
+
 func getPost(context *gin.Context) {
 
 }
@@ -67,10 +69,12 @@ func deletePost(context *gin.Context) {
 	//token := context.GetHeader("Authorization")
 
 	if err := postService.DeletePost(postIds.Ids...); err != nil {
+
 		if err == gorm.ErrRecordNotFound {
 			appG.Response(http.StatusBadRequest, e.ERROR_POST_NOT_EXIST, nil)
 			return
 		}
+
 		appG.Response(http.StatusBadRequest, e.ERROR, nil)
 		return
 	}
