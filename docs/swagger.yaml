@@ -8,6 +8,80 @@ definitions:
       msg:
         type: string
     type: object
+  models.Post:
+    properties:
+      content:
+        type: string
+      created_on:
+        type: integer
+      deleted_on:
+        type: integer
+      id:
+        type: integer
+      modified_on:
+        type: integer
+      summary:
+        type: string
+      title:
+        type: string
+      user_id:
+        type: integer
+    type: object
+  models.User:
+    properties:
+      avatar_src:
+        description: 头像地址
+        type: string
+      company:
+        description: 公司
+        type: string
+      created_on:
+        type: integer
+      deleted_on:
+        type: integer
+      description:
+        description: 描述
+        type: string
+      email:
+        description: 电子邮件
+        type: string
+      id:
+        type: integer
+      modified_on:
+        type: integer
+      name:
+        description: 昵称
+        type: string
+      password:
+        description: 密码
+        type: string
+      position:
+        description: 职位
+        type: string
+      sex:
+        description: 性别
+        type: integer
+      username:
+        description: 用户名
+        type: string
+      web_site:
+        description: 网站
+        type: string
+    type: object
+  router.auth:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+  v1.postIds:
+    properties:
+      ids:
+        items:
+          type: integer
+        type: array
+    type: object
 info:
   contact: {}
   description: Tuboshu Service Api
@@ -16,14 +90,15 @@ info:
   title: Tuboshu Service Api
   version: "2.0"
 paths:
-  /api/v1/tags/import:
+  /auth/login:
     post:
       parameters:
-      - description: Image File
-        in: formData
-        name: image
+      - description: user
+        in: body
+        name: user
         required: true
-        type: file
+        schema:
+          $ref: '#/definitions/router.auth'
       produces:
       - application/json
       responses:
@@ -35,22 +110,46 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/app.Response'
-      summary: Import Image
-  /auth:
+      security:
+      - ApiKeyAuth: []
+      summary: 获取认证信息
+      tags:
+        - Auth
+  /auth/register:
+    post:
+      parameters:
+      - description: user
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.User'
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/app.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/app.Response'
+      security:
+        - ApiKeyAuth: []
+      summary: 添加用户
+      tags:
+        - Auth
+  /auth/test:
     get:
       parameters:
-      - description: userName
-        in: query
-        name: username
-        required: true
-        type: string
-      - description: password
-        in: query
-        name: password
-        required: true
-        type: string
+        - description: string
+          in: query
+          name: str
+          required: true
+          type: string
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
@@ -60,5 +159,63 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/app.Response'
-      summary: Get Auth
+      security:
+        - ApiKeyAuth: []
+      summary: auth测试
+      tags:
+        - Auth
+  /v1/post:
+    delete:
+      parameters:
+        - description: postIds
+          in: body
+          name: postIds
+          required: true
+          schema:
+            $ref: '#/definitions/v1.postIds'
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/app.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/app.Response'
+      security:
+        - ApiKeyAuth: []
+      summary: 删除用户帖子
+      tags:
+        - Post
+    post:
+      parameters:
+        - description: post
+          in: body
+          name: post
+          required: true
+          schema:
+            $ref: '#/definitions/models.Post'
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/app.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/app.Response'
+      security:
+        - ApiKeyAuth: []
+      summary: 新增帖子
+      tags:
+        - Post
+securityDefinitions:
+  ApiKeyAuth:
+    in: Header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"

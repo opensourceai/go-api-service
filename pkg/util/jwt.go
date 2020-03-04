@@ -10,25 +10,22 @@ var jwtSecret []byte
 
 type Claims struct {
 	Username string `json:"username"`
-	Password string `json:"password"`
 	jwt.StandardClaims
 }
 
 // GenerateToken generate tokens used for auth
-func GenerateToken(username, password string) (string, error) {
+func GenerateToken(username string) (string, error) {
 	nowTime := time.Now()
 	expireTime := nowTime.Add(3 * time.Hour)
-
+	md5Username := EncodeMD5(username)
 	claims := Claims{
-		EncodeMD5(username),
-		EncodeMD5(password),
+		md5Username,
 		jwt.StandardClaims{
 			ExpiresAt: expireTime.Unix(),
 			Issuer:    "hive",
 		},
 	}
-
-	tokenClaims := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	tokenClaims := jwt.NewWithClaims(jwt.SigningMethodHS512, claims)
 	token, err := tokenClaims.SignedString(jwtSecret)
 
 	return token, err

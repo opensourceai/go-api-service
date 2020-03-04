@@ -3,12 +3,12 @@ package main
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/opensourceai/go-api-service/api"
 	"github.com/opensourceai/go-api-service/dao/mysql"
 	"github.com/opensourceai/go-api-service/pkg/gredis"
 	"github.com/opensourceai/go-api-service/pkg/logging"
 	"github.com/opensourceai/go-api-service/pkg/setting"
 	"github.com/opensourceai/go-api-service/pkg/util"
-	"github.com/opensourceai/go-api-service/routers"
 	"log"
 	"net/http"
 )
@@ -28,10 +28,15 @@ func init() {
 // @version 2.0
 // @description Tuboshu Service Api
 // @termsOfService https://github.com/opensourceai
+
+// @securityDefinitions.apikey ApiKeyAuth
+// @in Header
+// @name Authorization
+
 func main() {
 	gin.SetMode(setting.ServerSetting.RunMode)
 
-	routersInit := routers.InitRouter()
+	routersInit := api.InitRouter()
 	readTimeout := setting.ServerSetting.ReadTimeout
 	writeTimeout := setting.ServerSetting.WriteTimeout
 	endPoint := fmt.Sprintf(":%d", setting.ServerSetting.HttpPort)

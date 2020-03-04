@@ -1,9 +1,9 @@
 FROM golang:latest
 
 ENV GOPROXY https://goproxy.cn,direct
-WORKDIR $GOPATH/src/github.com/EDDYCJY/go-gin-example
-COPY . $GOPATH/src/github.com/EDDYCJY/go-gin-example
+WORKDIR $GOPATH/src/github.com/opensourceai/go-api-service
+COPY . $GOPATH/src/github.com/opensourceai/go-api-service
 RUN go build .
 
 EXPOSE 8000
-ENTRYPOINT ["./go-gin-example"]
+ENTRYPOINT ["./go-api-service"]

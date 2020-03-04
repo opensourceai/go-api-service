@@ -9,9 +9,8 @@ import (
 type UserDaoImpl struct{}
 
 func (u UserDaoImpl) Add(user *models.User) error {
-	if db.NewRecord(&user) {
-		return errors.New("主键已存在")
-	}
+	// 防止主键ID被人为更新
+	user.ID = 0
 	db.Create(user)
 	return nil
 }
@@ -35,7 +34,7 @@ func (u UserDaoImpl) GetUserByUsername(username string) (err error, user models.
 
 }
 
-func (u UserDaoImpl) DeleteById(ids ...int) error {
+func (u UserDaoImpl) DeleteById(ids ...uint) error {
 	user := models.User{}
 	// 查询用户id是否存在
 	for _, id := range ids {
