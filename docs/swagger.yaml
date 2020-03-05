@@ -114,7 +114,7 @@ paths:
       - ApiKeyAuth: []
       summary: 获取认证信息
       tags:
-        - Auth
+      - Auth
   /auth/register:
     post:
       parameters:
@@ -125,7 +125,7 @@ paths:
         schema:
           $ref: '#/definitions/models.User'
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
@@ -189,6 +189,42 @@ paths:
       summary: 删除用户帖子
       tags:
         - Post
+    get:
+      parameters:
+        - description: pageNum
+          in: query
+          name: page
+          required: true
+          type: string
+        - description: pageSize
+          in: query
+          name: size
+          required: true
+          type: string
+        - description: orderBy
+          in: query
+          name: orderBy
+          type: string
+        - description: sorter
+          in: query
+          name: sorter
+          type: string
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/app.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/app.Response'
+      security:
+        - ApiKeyAuth: []
+      summary: 获取用户自身帖子
+      tags:
+        - Post
     post:
       parameters:
         - description: post
@@ -211,6 +247,54 @@ paths:
       security:
         - ApiKeyAuth: []
       summary: 新增帖子
+      tags:
+        - Post
+    put:
+      parameters:
+        - description: post
+          in: body
+          name: post
+          required: true
+          schema:
+            $ref: '#/definitions/models.Post'
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/app.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/app.Response'
+      security:
+        - ApiKeyAuth: []
+      summary: 修改用户自身帖子
+      tags:
+        - Post
+  /v1/post/{id}:
+    get:
+      parameters:
+        - description: id
+          in: path
+          name: id
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/app.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/app.Response'
+      security:
+        - ApiKeyAuth: []
+      summary: 修改用户自身帖子
       tags:
         - Post
 securityDefinitions:

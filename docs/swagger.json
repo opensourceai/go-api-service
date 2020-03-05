@@ -131,6 +131,101 @@
         }
       },
       "/v1/post": {
+        "get": {
+          "security": [
+            {
+              "ApiKeyAuth": []
+            }
+          ],
+          "produces": [
+            "application/json"
+          ],
+          "tags": [
+            "Post"
+          ],
+          "summary": "获取用户自身帖子",
+          "parameters": [
+            {
+              "type": "string",
+              "description": "pageNum",
+              "name": "page",
+              "in": "query",
+              "required": true
+            },
+            {
+              "type": "string",
+              "description": "pageSize",
+              "name": "size",
+              "in": "query",
+              "required": true
+            },
+            {
+              "type": "string",
+              "description": "orderBy",
+              "name": "orderBy",
+              "in": "query"
+            },
+            {
+              "type": "string",
+              "description": "sorter",
+              "name": "sorter",
+              "in": "query"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "OK",
+              "schema": {
+                "$ref": "#/definitions/app.Response"
+              }
+            },
+            "500": {
+              "description": "Internal Server Error",
+              "schema": {
+                "$ref": "#/definitions/app.Response"
+              }
+            }
+          }
+        },
+        "put": {
+          "security": [
+            {
+              "ApiKeyAuth": []
+            }
+          ],
+          "produces": [
+            "application/json"
+          ],
+          "tags": [
+            "Post"
+          ],
+          "summary": "修改用户自身帖子",
+          "parameters": [
+            {
+              "description": "post",
+              "name": "post",
+              "in": "body",
+              "required": true,
+              "schema": {
+                "$ref": "#/definitions/models.Post"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "OK",
+              "schema": {
+                "$ref": "#/definitions/app.Response"
+              }
+            },
+            "500": {
+              "description": "Internal Server Error",
+              "schema": {
+                "$ref": "#/definitions/app.Response"
+              }
+            }
+          }
+        },
         "post": {
           "security": [
             {
@@ -192,6 +287,45 @@
               "schema": {
                 "$ref": "#/definitions/v1.postIds"
               }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "OK",
+              "schema": {
+                "$ref": "#/definitions/app.Response"
+              }
+            },
+            "500": {
+              "description": "Internal Server Error",
+              "schema": {
+                "$ref": "#/definitions/app.Response"
+              }
+            }
+          }
+        }
+      },
+      "/v1/post/{id}": {
+        "get": {
+          "security": [
+            {
+              "ApiKeyAuth": []
+            }
+          ],
+          "produces": [
+            "application/json"
+          ],
+          "tags": [
+            "Post"
+          ],
+          "summary": "修改用户自身帖子",
+          "parameters": [
+            {
+              "type": "string",
+              "description": "id",
+              "name": "id",
+              "in": "path",
+              "required": true
             }
           ],
           "responses": {
@@ -272,32 +406,32 @@
           "deleted_on": {
             "type": "integer"
           },
-                "description": {
-                    "description": "描述",
-                    "type": "string"
-                },
-                "email": {
-                    "description": "电子邮件",
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "modified_on": {
-                    "type": "integer"
-                },
-                "name": {
-                    "description": "昵称",
-                    "type": "string"
-                },
-                "password": {
-                    "description": "密码",
-                    "type": "string"
-                },
-                "position": {
-                    "description": "职位",
-                  "type": "string"
-                },
+          "description": {
+            "description": "描述",
+            "type": "string"
+          },
+          "email": {
+            "description": "电子邮件",
+            "type": "string"
+          },
+          "id": {
+            "type": "integer"
+          },
+          "modified_on": {
+            "type": "integer"
+          },
+          "name": {
+            "description": "昵称",
+            "type": "string"
+          },
+          "password": {
+            "description": "密码",
+            "type": "string"
+          },
+          "position": {
+            "description": "职位",
+            "type": "string"
+          },
           "sex": {
             "description": "性别",
             "type": "integer"

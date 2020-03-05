@@ -9,17 +9,18 @@ import (
 var jwtSecret []byte
 
 type Claims struct {
+	Id       int
 	Username string `json:"username"`
 	jwt.StandardClaims
 }
 
 // GenerateToken generate tokens used for auth
-func GenerateToken(username string) (string, error) {
+func GenerateToken(id int, username string) (string, error) {
 	nowTime := time.Now()
 	expireTime := nowTime.Add(3 * time.Hour)
-	md5Username := EncodeMD5(username)
 	claims := Claims{
-		md5Username,
+		id,
+		username,
 		jwt.StandardClaims{
 			ExpiresAt: expireTime.Unix(),
 			Issuer:    "hive",

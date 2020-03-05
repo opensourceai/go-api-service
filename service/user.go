@@ -10,7 +10,7 @@ import (
 
 type UserService interface {
 	Register(user *models.User) error
-	Login(user models.User) (bool, error)
+	Login(user models.User) (*models.User, bool, error)
 }
 
 type UserServiceImpl struct{}
@@ -26,15 +26,15 @@ func (UserServiceImpl) Register(user *models.User) error {
 	return userDao.Add(user)
 }
 
-func (i UserServiceImpl) Login(user models.User) (bool, error) {
+func (i UserServiceImpl) Login(user models.User) (*models.User, bool, error) {
 	err, u := userDao.GetUserByUsername(user.Username)
 	if err != nil {
-		return false, errors.New("登录失败")
+		return nil, false, errors.New("登录失败")
 	}
 	// 匹配密码
 	md5Password := util.EncodeMD5(user.Password)
 	if u.Password == md5Password {
-		return true, nil
+		return &u, true, nil
 	}
-	return false, errors.New("登录失败")
+	return nil, false, errors.New("登录失败")
 }

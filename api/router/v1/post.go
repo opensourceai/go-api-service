@@ -10,6 +10,7 @@ import (
 	"github.com/opensourceai/go-api-service/pkg/page"
 	"github.com/opensourceai/go-api-service/service"
 	"net/http"
+	"strconv"
 )
 
 var postService service.PostService
@@ -22,32 +23,147 @@ func PostApi(router *gin.Engine) {
 	post.Use(jwt.JWT())
 	{
 		post.POST("", addPost)
+
 		post.DELETE("", deletePost)
-		post.GET("", getPost)
+
+		post.GET("", getPostList)
+		post.GET("/:id", getPost)
+
+		post.PUT("", updatePost)
 	}
 }
 
-type postPage struct {
-	models.Post
-	page.Page
+// @Summary 修改用户自身帖子
+// @Tags Post
+// @Produce  json
+// @Param id path string true "id"
+// @Success 200 {object} app.Response
+// @Failure 500 {object} app.Response
+// @Security ApiKeyAuth
+// @Router /v1/post/{id} [get]
+func getPost(context *gin.Context) {
+	appG := app.Gin{C: context}
+	// 请求异常处理
+	defer app.Recover(&appG)
+
+	id := context.Param("id")
+	if id == "" {
+		appG.Response(http.StatusBadRequest, e.INVALID_PARAMS, nil)
+		return
+	}
+	//userInfo := app.GetUserInfo(context)
+	post, err := postService.GetPost(id)
+	if err != nil {
+		appG.Response(http.StatusBadRequest, e.INVALID_PARAMS, nil)
+		return
+	}
+	appG.Response(http.StatusOK, e.SUCCESS, post)
+
 }
 
+// @Summary 修改用户自身帖子
+// @Tags Post
+// @Produce  json
+// @Param post body models.Post true "post"
+// @Success 200 {object} app.Response
+// @Failure 500 {object} app.Response
+// @Security ApiKeyAuth
+// @Router /v1/post [put]
+func updatePost(context *gin.Context) {
+	appG := app.Gin{C: context}
+	// 请求异常处理
+	//defer app.Recover(&appG)
+	post := models.Post{}
+	httpCode, errCode := app.BindAndValid(context, &post)
+	if errCode != e.SUCCESS {
+		appG.Response(httpCode, errCode, nil)
+		return
+	}
+	userInfo := app.GetUserInfo(context)
+	if err := postService.UpdatePost(userInfo.UserId, &post); err == gorm.ErrRecordNotFound {
+		appG.Response(http.StatusNotFound, e.NOT_FOUND, nil)
+		return
+	} else if err != nil {
+		appG.Response(http.StatusBadRequest, e.ERROR, nil)
+		return
+	}
+	appG.Response(http.StatusOK, e.SUCCESS, nil)
+}
 
 // @Summary 获取用户自身帖子
 // @Tags Post
 // @Produce  json
-// @Param postIds body postIds true "postIds"
+// @Param page query string true "pageNum"
+// @Param size query string true "pageSize"
+// @Param orderBy query string false "orderBy"
+// @Param sorter query string false "sorter"
 // @Success 200 {object} app.Response
 // @Failure 500 {object} app.Response
 // @Security ApiKeyAuth
 // @Router /v1/post [get]
+func getPostList(context *gin.Context) {
+	appG := app.Gin{C: context}
+	// 请求异常处理
+	defer app.Recover(&appG)
+	var err error
+	// 第几页
+	pageNum := context.Query("page")
+	var pageNumInt int
 
-func getPost(context *gin.Context) {
+	if pageNum == "" {
+		panic("pageNum 不能为空.")
+	} else {
+		if pageNumInt, err = strconv.Atoi(pageNum); err != nil {
+			panic("pageNum 无法转换.")
+		}
+	}
+	// 每页数据个数
+	pageSize := context.Query("size")
+	var pageSizeInt int
+
+	if pageSize == "" {
+		panic("pageSize 不能为空.")
+
+	} else {
+		if pageSizeInt, err = strconv.Atoi(pageSize); err != nil {
+			panic("pageSize 无法转换.")
+		}
+	}
+
+	// 排序字段
+	sorter := context.Query("sorter")
+	if sorter == "" {
+		sorter = "asc"
+	}
+
+	// 排序方式
+	orderBy := context.Query("orderBy")
+	if orderBy == "" {
+		orderBy = "id"
+	}
+
+	pageObj := page.NewPage(pageNumInt, pageSizeInt, orderBy, sorter)
+
+	// 参数检验
+	httpCode, errCode := app.Valid(pageObj)
+	if errCode != e.SUCCESS {
+		appG.Response(httpCode, errCode, nil)
+		return
+	}
+	info := app.GetUserInfo(context)
+
+	if post, err := postService.GetOwnPost(pageObj, info.UserId); err != nil {
+		appG.Response(http.StatusBadRequest, e.ERROR, post)
+		return
+	} else {
+		appG.Response(http.StatusOK, e.SUCCESS, post)
+		return
+	}
 
 }
 
 type postIds struct {
-	Ids []uint
+	Ids []int
 }
 
 // @Summary 删除用户帖子
@@ -61,23 +177,25 @@ type postIds struct {
 func deletePost(context *gin.Context) {
 	postIds := postIds{}
 	appG := app.Gin{C: context}
+	defer app.Recover(&appG)
+
 	httpCode, errCode := app.BindAndValid(context, &postIds)
 	if errCode != e.SUCCESS {
 		appG.Response(httpCode, errCode, nil)
 		return
 	}
 	//token := context.GetHeader("Authorization")
-
-	if err := postService.DeletePost(postIds.Ids...); err != nil {
-
+	//userId, exists := context.Get("userId")
+	userInfo := app.GetUserInfo(context)
+	if err := postService.DeletePost(userInfo.UserId, postIds.Ids...); err != nil {
 		if err == gorm.ErrRecordNotFound {
 			appG.Response(http.StatusBadRequest, e.ERROR_POST_NOT_EXIST, nil)
 			return
 		}
-
 		appG.Response(http.StatusBadRequest, e.ERROR, nil)
 		return
 	}
+	appG.Response(http.StatusOK, e.SUCCESS, nil)
 
 }
 
@@ -92,6 +210,8 @@ func deletePost(context *gin.Context) {
 func addPost(context *gin.Context) {
 	post := models.Post{}
 	appG := app.Gin{C: context}
+	defer app.Recover(&appG)
+
 	// 参数校验
 	httpCode, errCode := app.BindAndValid(context, &post)
 	if errCode != e.SUCCESS {

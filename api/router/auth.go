@@ -56,7 +56,7 @@ func login(c *gin.Context) {
 		return
 	}
 
-	isExist, err := userService.Login(models.User{Username: user.Username, Password: user.Password})
+	userFound, isExist, err := userService.Login(models.User{Username: user.Username, Password: user.Password})
 	if err != nil {
 		appG.Response(http.StatusInternalServerError, e.ERROR_AUTH_CHECK_TOKEN_FAIL, nil)
 		return
@@ -67,7 +67,7 @@ func login(c *gin.Context) {
 		return
 	}
 	// 生成token
-	token, err := util.GenerateToken(user.Username)
+	token, err := util.GenerateToken(userFound.ID, userFound.Username)
 	if err != nil {
 		appG.Response(http.StatusInternalServerError, e.ERROR_AUTH_TOKEN, nil)
 		return
