@@ -1,6 +1,7 @@
 # Go API Service
 **基于Gin构建的土拨鼠社区基础服务**
 
+[![Go](https://github.com/opensourceai/go-api-service/workflows/Go/badge.svg)](https://github.com/opensourceai/go-api-service/actions)
 
 ## How to run
 
