@@ -26,8 +26,8 @@ func InitRouter() *gin.Engine {
 	r.StaticFS("/upload/images", http.Dir(upload.GetImageFullPath()))
 	r.StaticFS("/qrcode", http.Dir(qrcode.GetQrCodeFullPath()))
 	// swagger
-	url := ginSwagger.URL("http://localhost:8000/swagger/doc.json")
-	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))
+	//url := ginSwagger.URL("http://0.0.0.0:8000/swagger/doc.json")
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	// 认证
 	router.Auth(r)
