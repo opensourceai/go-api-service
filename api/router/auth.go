@@ -15,8 +15,8 @@ import (
 )
 
 type auth struct {
-	Username string `valid:"Required; MaxSize(50)"`
-	Password string `valid:"Required; MaxSize(50)"`
+	Username string `valid:"Required; MaxSize(50)"` // 用户名
+	Password string `valid:"Required; MaxSize(50)"` // 密码
 }
 
 var userService service.UserService
@@ -45,7 +45,6 @@ func Auth(router *gin.Engine) {
 // @Param user body auth true "user"
 // @Success 200 {object} app.Response
 // @Failure 500 {object} app.Response
-// @Security ApiKeyAuth
 // @Router /auth/login [post]
 func login(c *gin.Context) {
 	user := auth{}
@@ -84,7 +83,6 @@ func login(c *gin.Context) {
 // @Param user body models.User true "user"
 // @Success 200 {object} app.Response
 // @Failure 500 {object} app.Response
-// @Security ApiKeyAuth
 // @Router /auth/register [post]
 func register(c *gin.Context) {
 	user := models.User{}

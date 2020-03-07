@@ -43,7 +43,6 @@ func JWT() gin.HandlerFunc {
 			return
 		}
 		if claims != nil {
-			//fmt.Println("username", claims.)
 			c.Set("username", claims.Username)
 			c.Set("userId", claims.Id)
 		}

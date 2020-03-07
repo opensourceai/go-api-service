@@ -23,7 +23,7 @@ func (p PostDaoImpl) UpdatePost(userId string, post *models.Post) (err error) {
 
 func (p PostDaoImpl) GetPost(id string) (post *models.Post, err error) {
 	post = &models.Post{}
-	err = db.Where("id = ?", id).First(post).Error
+	err = db.Where("id = ? and deleted_on = 0", id).First(post).Error
 	return
 }
 

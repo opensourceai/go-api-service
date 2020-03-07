@@ -20,20 +20,22 @@ func init() {
 }
 func PostApi(router *gin.Engine) {
 	post := router.Group("/v1/post")
+	// 无需认证
+	{
+		post.GET("/:id", getPost)
+	}
+	// 需认证
 	post.Use(jwt.JWT())
 	{
 		post.POST("", addPost)
-
 		post.DELETE("", deletePost)
-
 		post.GET("", getPostList)
-		post.GET("/:id", getPost)
-
 		post.PUT("", updatePost)
 	}
+
 }
 
-// @Summary 修改用户自身帖子
+// @Summary 获取帖子信息
 // @Tags Post
 // @Produce  json
 // @Param id path string true "id"
@@ -54,7 +56,7 @@ func getPost(context *gin.Context) {
 	//userInfo := app.GetUserInfo(context)
 	post, err := postService.GetPost(id)
 	if err != nil {
-		appG.Response(http.StatusBadRequest, e.INVALID_PARAMS, nil)
+		appG.Response(http.StatusNotFound, e.ERROR_POST_NOT_EXIST, nil)
 		return
 	}
 	appG.Response(http.StatusOK, e.SUCCESS, post)
@@ -163,7 +165,7 @@ func getPostList(context *gin.Context) {
 }
 
 type postIds struct {
-	Ids []int
+	Ids []int `json:"ids"` // 帖子IDs
 }
 
 // @Summary 删除用户帖子

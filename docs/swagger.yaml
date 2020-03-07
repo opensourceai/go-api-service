@@ -11,20 +11,28 @@ definitions:
   models.Post:
     properties:
       content:
+        description: 内容
         type: string
       created_on:
+        description: 新建时间
         type: integer
       deleted_on:
+        description: 删除时间
         type: integer
       id:
+        description: ID
         type: integer
       modified_on:
+        description: 修改时间
         type: integer
       summary:
+        description: 摘要
         type: string
       title:
+        description: 标题
         type: string
       user_id:
+        description: 用户ID
         type: integer
     type: object
   models.User:
@@ -36,8 +44,10 @@ definitions:
         description: 公司
         type: string
       created_on:
+        description: 新建时间
         type: integer
       deleted_on:
+        description: 删除时间
         type: integer
       description:
         description: 描述
@@ -46,8 +56,10 @@ definitions:
         description: 电子邮件
         type: string
       id:
+        description: ID
         type: integer
       modified_on:
+        description: 修改时间
         type: integer
       name:
         description: 昵称
@@ -71,13 +83,16 @@ definitions:
   router.auth:
     properties:
       password:
+        description: 密码
         type: string
       username:
+        description: 用户名
         type: string
     type: object
   v1.postIds:
     properties:
       ids:
+        description: 帖子IDs
         items:
           type: integer
         type: array
@@ -110,8 +125,6 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/app.Response'
-      security:
-      - ApiKeyAuth: []
       summary: 获取认证信息
       tags:
       - Auth
@@ -135,8 +148,6 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/app.Response'
-      security:
-        - ApiKeyAuth: []
       summary: 添加用户
       tags:
         - Auth
@@ -294,7 +305,7 @@ paths:
             $ref: '#/definitions/app.Response'
       security:
         - ApiKeyAuth: []
-      summary: 修改用户自身帖子
+      summary: 获取帖子信息
       tags:
         - Post
 securityDefinitions:

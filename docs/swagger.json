@@ -11,11 +11,6 @@
     "paths": {
         "/auth/login": {
             "post": {
-              "security": [
-                {
-                  "ApiKeyAuth": []
-                }
-              ],
               "produces": [
                 "application/json"
               ],
@@ -52,11 +47,6 @@
         },
         "/auth/register": {
             "post": {
-              "security": [
-                {
-                  "ApiKeyAuth": []
-                }
-              ],
               "produces": [
                 "application/json"
               ],
@@ -318,7 +308,7 @@
           "tags": [
             "Post"
           ],
-          "summary": "修改用户自身帖子",
+          "summary": "获取帖子信息",
           "parameters": [
             {
               "type": "string",
@@ -364,27 +354,35 @@
         "type": "object",
         "properties": {
           "content": {
+            "description": "内容",
             "type": "string"
           },
           "created_on": {
+            "description": "新建时间",
             "type": "integer"
           },
           "deleted_on": {
+            "description": "删除时间",
             "type": "integer"
           },
           "id": {
+            "description": "ID",
             "type": "integer"
           },
           "modified_on": {
+            "description": "修改时间",
             "type": "integer"
           },
           "summary": {
+            "description": "摘要",
             "type": "string"
           },
           "title": {
+            "description": "标题",
             "type": "string"
           },
           "user_id": {
+            "description": "用户ID",
             "type": "integer"
           }
         }
@@ -401,9 +399,11 @@
             "type": "string"
           },
           "created_on": {
+            "description": "新建时间",
             "type": "integer"
           },
           "deleted_on": {
+            "description": "删除时间",
             "type": "integer"
           },
           "description": {
@@ -415,9 +415,11 @@
             "type": "string"
           },
           "id": {
+            "description": "ID",
             "type": "integer"
           },
           "modified_on": {
+            "description": "修改时间",
             "type": "integer"
           },
           "name": {
@@ -450,9 +452,11 @@
         "type": "object",
         "properties": {
           "password": {
+            "description": "密码",
             "type": "string"
           },
           "username": {
+            "description": "用户名",
             "type": "string"
           }
         }
@@ -461,6 +465,7 @@
         "type": "object",
         "properties": {
           "ids": {
+            "description": "帖子IDs",
             "type": "array",
             "items": {
               "type": "integer"
