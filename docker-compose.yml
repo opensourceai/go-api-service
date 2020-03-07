@@ -7,6 +7,6 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - 80:80
+      - 8000:8000
     extra_hosts:
       - db.hive-ltd.com:${DB_HOST}
