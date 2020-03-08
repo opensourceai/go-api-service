@@ -28,10 +28,11 @@ require (
 	github.com/swaggo/swag v1.6.5
 	github.com/unknwon/com v1.0.1
 	golang.org/x/crypto v0.0.0-20200221231518-2aa609cf4a9d // indirect
-	golang.org/x/net v0.0.0-20200301022130-244492dfa37a // indirect
+	golang.org/x/net v0.0.0-20200301022130-244492dfa37a
+	golang.org/x/oauth2 v0.0.0-20200107190931-bf48bf16ab8d
 	golang.org/x/sys v0.0.0-20200301040627-c5d0d7b4ec88 // indirect
 	golang.org/x/tools v0.0.0-20200228224639-71482053b885 // indirect
-	google.golang.org/appengine v1.6.3 // indirect
+	google.golang.org/appengine v1.6.5 // indirect
 	gopkg.in/go-playground/validator.v9 v9.31.0 // indirect
 	gopkg.in/ini.v1 v1.47.0 // indirect
 	gopkg.in/yaml.v2 v2.2.8 // indirect

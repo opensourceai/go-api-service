@@ -31,6 +31,7 @@ func InitRouter() *gin.Engine {
 
 	// 认证
 	router.Auth(r)
+	router.Oauth2(r)
 
 	//r.Use(jwt.JWT())
 	//if setting.ServerSetting.RunMode == "prod" {
