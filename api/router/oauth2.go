@@ -38,13 +38,6 @@ var githubOauthConfig = &oauth2.Config{
 	Endpoint:     github.Endpoint,
 }
 
-// @Summary 获取Oauth github认证信息
-// @Tags Auth
-// @Produce  json
-// @Param user body auth true "user"
-// @Success 200 {object} app.Response
-// @Failure 500 {object} app.Response
-// @Router /auth/login [post]
 func githubLogin(c *gin.Context) {
 	url := githubOauthConfig.AuthCodeURL(oauthStateString)
 	fmt.Println(url)
@@ -60,41 +53,24 @@ func githubCallback(c *gin.Context) {
 		}
 	}
 	if code, b := c.GetQuery("code"); b {
-		//v := url.Values{
-		//	"code":          {code},
-		//	"client_id":     {githubOauthConfig.ClientID},
-		//	"client_secret": {githubOauthConfig.ClientSecret},
-		//}
-		//resp, err2 := http.Post(github.Endpoint.TokenURL+"?code="+code+"&client_id="+githubOauthConfig.ClientID+"&client_secret="+githubOauthConfig.ClientSecret, "application/x-www-form-urlencoded", nil)
-		//if err2 == nil && resp != nil {
-		//	defer resp.Body.Close()
-		//	contents, _ := ioutil.ReadAll(resp.Body)
-		//	fmt.Println(contents)
-		//
-		//} else {
-		//	fmt.Print(err2)
-		//	appG.Response(http.StatusBadRequest, e.ERROR, nil)
-		//	return
-		//}
-
 		token, err := githubOauthConfig.Exchange(context.Background(), code)
 		if err != nil {
 			fmt.Printf("Code exchange failed with '%s'\n", err)
-			c.Redirect(http.StatusTemporaryRedirect, "/")
-			appG.Response(http.StatusOK, e.SUCCESS, token)
+			appG.Response(http.StatusBadRequest, e.ERROR, nil)
 			return
 		}
 
-		appG.Response(http.StatusBadRequest, e.ERROR, nil)
-
-		if response, err := http.Get("https://api.github.com/user?access_token=" + token.AccessToken); err != nil && response != nil {
+		client := githubOauthConfig.Client(context.Background(), token)
+		if response, err := client.Get("https://api.github.com/user"); err == nil && response != nil {
 			defer response.Body.Close()
 			contents, _ := ioutil.ReadAll(response.Body)
 			appG.Response(http.StatusOK, e.SUCCESS, contents)
+			return
 		}
 
+	} else {
+		appG.Response(http.StatusBadRequest, e.ERROR, "")
 	}
-	appG.Response(http.StatusBadRequest, e.ERROR, "")
 
 }
 
@@ -128,9 +104,9 @@ func googleCallback(c *gin.Context) {
 			c.Redirect(http.StatusTemporaryRedirect, "/")
 			return
 		}
-		fmt.Println("token", token)
 		appG.Response(http.StatusOK, e.SUCCESS, token)
+	} else {
+		appG.Response(http.StatusBadRequest, e.ERROR, nil)
 	}
-	appG.Response(http.StatusBadRequest, e.ERROR, nil)
 
 }
