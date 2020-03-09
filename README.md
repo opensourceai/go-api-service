@@ -10,6 +10,7 @@
 - Mysql:线上已部署
 - Redis 
 > 本地部署.使用`test/docker-compose.yaml`本地部署
+
 ### Conf
 
 配置文件 `conf/app.ini`
@@ -31,6 +32,10 @@ MaxActive = 30
 IdleTimeout = 200
 ...
 ```
+配置环境变量
+
+- GO111MODULE=on
+- GOPROXY=https://goproxy.io
 
 ### Run
 ```
@@ -85,3 +90,7 @@ Swagger doc: http://localhost:8000/swagger/index.html
 - App configurable
 - Cron
 - Redis
+
+## Tools
+
+- GoLand
