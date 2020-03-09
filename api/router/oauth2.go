@@ -10,6 +10,7 @@ import (
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/github"
 	"golang.org/x/oauth2/google"
+	"io/ioutil"
 	"net/http"
 )
 
@@ -18,13 +19,13 @@ var oauthStateString = com.ToStr(com.RandomCreateBytes(12))
 func Oauth2(router *gin.Engine) {
 	githubR := router.Group("/oauth2/github")
 	{
-		githubR.Any("/login", githubLogin)
+		githubR.GET("/login", githubLogin)
 		githubR.GET("/callback", githubCallback)
 	}
 	githubG := router.Group("/oauth2/google")
 	{
 		githubG.Any("/login", googleLogin)
-		githubG.Any("/callback", googleCallback)
+		githubG.GET("/callback", googleCallback)
 	}
 
 }
@@ -32,7 +33,7 @@ func Oauth2(router *gin.Engine) {
 var githubOauthConfig = &oauth2.Config{
 	ClientID:     "41af06dd237b762a91cc",
 	ClientSecret: "06044e6f11daef1f9e39e88d450cf2c32a4197d3",
-	RedirectURL:  "http://localhost:8000/oauth2/github/callback",
+	RedirectURL:  "http://101.132.38.180:8000/oauth2/github/callback",
 	Scopes:       []string{"user"},
 	Endpoint:     github.Endpoint,
 }
@@ -59,6 +60,23 @@ func githubCallback(c *gin.Context) {
 		}
 	}
 	if code, b := c.GetQuery("code"); b {
+		//v := url.Values{
+		//	"code":          {code},
+		//	"client_id":     {githubOauthConfig.ClientID},
+		//	"client_secret": {githubOauthConfig.ClientSecret},
+		//}
+		//resp, err2 := http.Post(github.Endpoint.TokenURL+"?code="+code+"&client_id="+githubOauthConfig.ClientID+"&client_secret="+githubOauthConfig.ClientSecret, "application/x-www-form-urlencoded", nil)
+		//if err2 == nil && resp != nil {
+		//	defer resp.Body.Close()
+		//	contents, _ := ioutil.ReadAll(resp.Body)
+		//	fmt.Println(contents)
+		//
+		//} else {
+		//	fmt.Print(err2)
+		//	appG.Response(http.StatusBadRequest, e.ERROR, nil)
+		//	return
+		//}
+
 		token, err := githubOauthConfig.Exchange(context.Background(), code)
 		if err != nil {
 			fmt.Printf("Code exchange failed with '%s'\n", err)
@@ -69,11 +87,11 @@ func githubCallback(c *gin.Context) {
 
 		appG.Response(http.StatusBadRequest, e.ERROR, nil)
 
-		//if response, err := http.Get("https://api.github.com/user?access_token=" + token.AccessToken); err != nil && response != nil {
-		//	defer response.Body.Close()
-		//	contents, _ := ioutil.ReadAll(response.Body)
-		//	appG.Response(http.StatusOK, e.SUCCESS, contents)
-		//}
+		if response, err := http.Get("https://api.github.com/user?access_token=" + token.AccessToken); err != nil && response != nil {
+			defer response.Body.Close()
+			contents, _ := ioutil.ReadAll(response.Body)
+			appG.Response(http.StatusOK, e.SUCCESS, contents)
+		}
 
 	}
 	appG.Response(http.StatusBadRequest, e.ERROR, "")
@@ -83,7 +101,7 @@ func githubCallback(c *gin.Context) {
 var googleOauthConfig = &oauth2.Config{
 	ClientID:     "882682681914-ub6u8vac6o6fdr798l0skhau3tfj9hrf.apps.googleusercontent.com",
 	ClientSecret: "PqGHL_LfX-lnIm7gSfNL77we",
-	RedirectURL:  "http://localhost:8000/oauth2/google/callback",
+	RedirectURL:  "http://101.132.38.180:8000/oauth2/google/callback",
 	Scopes: []string{"https://www.googleapis.com/auth/userinfo.profile",
 		"https://www.googleapis.com/auth/userinfo.email"},
 	Endpoint: google.Endpoint,
