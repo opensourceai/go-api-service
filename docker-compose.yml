@@ -1,6 +1,6 @@
 version: "3"
 services:
-  api-service:
+  api:
     image: ${IMAGE}:latest
     container_name: ${CONTAINER_NAME}
     build:
