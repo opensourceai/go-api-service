@@ -1,6 +1,6 @@
 version: "3"
 services:
-  album-front:
+  api-service:
     image: ${IMAGE}:latest
     container_name: ${CONTAINER_NAME}
     build:
@@ -9,4 +9,5 @@ services:
     ports:
       - 8000:8000
     extra_hosts:
-      - db.hive-ltd.com:${DB_HOST}
+      - db.tuboshu.io:${DB_HOST}
+      - redis.tuboshu.io:${DB_HOST}
