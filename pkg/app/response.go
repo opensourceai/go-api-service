@@ -2,6 +2,7 @@ package app
 
 import (
 	"github.com/gin-gonic/gin"
+	"net/http"
 
 	"github.com/opensourceai/go-api-service/pkg/e"
 )
@@ -24,4 +25,10 @@ func (g *Gin) Response(httpCode, errCode int, data interface{}) {
 		Data: data,
 	})
 	return
+}
+func (g *Gin) Success(data interface{}) {
+	g.Response(http.StatusOK, e.SUCCESS, data)
+}
+func (g *Gin) Fail(data interface{}) {
+	g.Response(http.StatusInternalServerError, e.ERROR, data)
 }

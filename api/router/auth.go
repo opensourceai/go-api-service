@@ -25,7 +25,7 @@ func init() {
 	userService = new(service.UserServiceImpl)
 }
 
-func Auth(router *gin.Engine) {
+func AuthApi(router *gin.Engine) {
 	auth := router.Group("/auth")
 	{
 		auth.POST("/login", login)

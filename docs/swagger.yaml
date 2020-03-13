@@ -10,6 +10,9 @@ definitions:
     type: object
   models.Post:
     properties:
+      board_id:
+        description: 版块ID
+        type: integer
       content:
         description: 内容
         type: string
@@ -78,6 +81,21 @@ definitions:
         type: string
       web_site:
         description: 网站
+        type: string
+    type: object
+  page.Page:
+    properties:
+      order_by:
+        description: 排序字段
+        type: string
+      page:
+        description: 页数
+        type: integer
+      size:
+        description: 条数
+        type: integer
+      sorter:
+        description: 升序, 降序
         type: string
     type: object
   router.auth:
@@ -150,7 +168,7 @@ paths:
             $ref: '#/definitions/app.Response'
       summary: 添加用户
       tags:
-        - Auth
+      - Auth
   /auth/test:
     get:
       parameters:
@@ -175,6 +193,82 @@ paths:
       summary: auth测试
       tags:
         - Auth
+  /v1/broad:
+    get:
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/app.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/app.Response'
+      summary: 获取全部版块列表信息
+      tags:
+        - Broad
+  /v1/broad/{id}:
+    get:
+      parameters:
+        - description: id
+          in: path
+          name: id
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/app.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/app.Response'
+      summary: 获取某版块信息
+      tags:
+        - Broad
+  /v1/broad/{id}/posts:
+    get:
+      parameters:
+        - description: id
+          in: path
+          name: id
+          required: true
+          type: string
+        - description: 页数
+          in: query
+          name: page
+          type: integer
+        - description: 条数
+          in: query
+          name: size
+          type: integer
+        - description: 排序字段
+          in: query
+          name: order_by
+          type: string
+        - description: 升序, 降序
+          in: query
+          name: sorter
+          type: string
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/app.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/app.Response'
+      summary: 获取某版块的帖子
+      tags:
+        - Broad
   /v1/post:
     delete:
       parameters:

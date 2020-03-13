@@ -30,8 +30,8 @@ func InitRouter() *gin.Engine {
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	// 认证
-	router.Auth(r)
-	router.Oauth2(r)
+	router.AuthApi(r)
+	router.OauthApi(r)
 
 	//r.Use(jwt.JWT())
 	//if setting.ServerSetting.RunMode == "prod" {
@@ -43,6 +43,8 @@ func InitRouter() *gin.Engine {
 	v1.UserApi(r)
 	// 帖子
 	v1.PostApi(r)
+	// 版块
+	v1.BroadApi(r)
 
 	return r
 }

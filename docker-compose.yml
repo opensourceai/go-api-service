@@ -11,3 +11,12 @@ services:
     extra_hosts:
       - db.tuboshu.io:${DB_HOST}
       - redis.tuboshu.io:${DB_HOST}
+    redis:
+      image: redis
+      ports:
+        - 6379:6379
+      healthcheck:
+        test: ["CMD", "redis-cli","ping"]
+        interval: 20s
+        timeout: 1s
+        retries: 20

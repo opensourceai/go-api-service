@@ -2,15 +2,17 @@ package page
 
 import (
 	"fmt"
+	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	"math"
+	"strconv"
 )
 
 type Page struct {
-	PageNum int    `json:"page" valid:"Min(0)"`
-	Size    int    `json:"size" valid:"Min(1)"`
-	OrderBy string `json:"order_by"` // 排序字段
-	Sorter  string `json:"sorter"`   // 升序, 降序
+	PageNum int    `json:"page" valid:"Min(0)"` // 页数
+	Size    int    `json:"size" valid:"Min(1)"` // 条数
+	OrderBy string `json:"order_by"`            // 排序字段
+	Sorter  string `json:"sorter"`              // 升序, 降序
 
 }
 type Result struct {
@@ -104,6 +106,50 @@ func PageHelper(condition *gorm.DB, model interface{}, page *Page) (result *Resu
 		TotalPage: totalPageNum,
 		NextPage:  nextPage,
 		PrevPage:  pervPage,
+	}
+	return
+}
+func BindPage(context *gin.Context) (p *Page) {
+	var err error
+	// 第几页
+	pageNum := context.Query("page")
+	var pageNumInt int
+
+	if pageNum == "" {
+		pageNumInt = 0
+	} else {
+		if pageNumInt, err = strconv.Atoi(pageNum); err != nil {
+			panic("pageNum 无法转换.")
+		}
+	}
+	// 每页数据个数
+	pageSize := context.Query("size")
+	var pageSizeInt int
+
+	if pageSize == "" {
+		pageSizeInt = 20
+	} else {
+		if pageSizeInt, err = strconv.Atoi(pageSize); err != nil {
+			panic("pageSize 无法转换.")
+		}
+	}
+
+	// 排序字段
+	sorter := context.Query("sorter")
+	if sorter == "" {
+		sorter = "asc"
+	}
+
+	// 排序方式
+	orderBy := context.Query("orderBy")
+	if orderBy == "" {
+		orderBy = "id"
+	}
+	p = &Page{
+		PageNum: pageNumInt,
+		Size:    pageSizeInt,
+		OrderBy: orderBy,
+		Sorter:  sorter,
 	}
 	return
 }

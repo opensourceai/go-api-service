@@ -16,13 +16,13 @@ import (
 
 var oauthStateString = com.ToStr(com.RandomCreateBytes(12))
 
-func Oauth2(router *gin.Engine) {
-	githubR := router.Group("/oauth2/github")
+func OauthApi(router *gin.Engine) {
+	githubR := router.Group("/oauth/github")
 	{
 		githubR.GET("/login", githubLogin)
 		githubR.GET("/callback", githubCallback)
 	}
-	githubG := router.Group("/oauth2/google")
+	githubG := router.Group("/oauth/google")
 	{
 		githubG.Any("/login", googleLogin)
 		githubG.GET("/callback", googleCallback)
@@ -33,7 +33,7 @@ func Oauth2(router *gin.Engine) {
 var githubOauthConfig = &oauth2.Config{
 	ClientID:     "41af06dd237b762a91cc",
 	ClientSecret: "06044e6f11daef1f9e39e88d450cf2c32a4197d3",
-	RedirectURL:  "http://api.tuboshu.io:8000/oauth2/github/callback",
+	RedirectURL:  "http://api.tuboshu.io:8000/oauth/github/callback",
 	Scopes:       []string{"user"},
 	Endpoint:     github.Endpoint,
 }
@@ -77,7 +77,7 @@ func githubCallback(c *gin.Context) {
 var googleOauthConfig = &oauth2.Config{
 	ClientID:     "882682681914-ub6u8vac6o6fdr798l0skhau3tfj9hrf.apps.googleusercontent.com",
 	ClientSecret: "PqGHL_LfX-lnIm7gSfNL77we",
-	RedirectURL:  "http://api.tuboshu.io:8000/oauth2/google/callback",
+	RedirectURL:  "http://api.tuboshu.io:8000/oauth/google/callback",
 	Scopes: []string{"https://www.googleapis.com/auth/userinfo.profile",
 		"https://www.googleapis.com/auth/userinfo.email"},
 	Endpoint: google.Endpoint,
