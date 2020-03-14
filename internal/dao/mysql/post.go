@@ -2,7 +2,7 @@ package mysql
 
 import (
 	"github.com/jinzhu/gorm"
-	"github.com/opensourceai/go-api-service/models"
+	"github.com/opensourceai/go-api-service/internal/models"
 	"github.com/opensourceai/go-api-service/pkg/page"
 )
 

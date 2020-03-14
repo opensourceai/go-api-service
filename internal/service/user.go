@@ -2,9 +2,9 @@ package service
 
 import (
 	"errors"
-	"github.com/opensourceai/go-api-service/dao"
-	"github.com/opensourceai/go-api-service/dao/mysql"
-	"github.com/opensourceai/go-api-service/models"
+	"github.com/opensourceai/go-api-service/internal/dao"
+	"github.com/opensourceai/go-api-service/internal/dao/mysql"
+	"github.com/opensourceai/go-api-service/internal/models"
 	"github.com/opensourceai/go-api-service/pkg/util"
 )
 

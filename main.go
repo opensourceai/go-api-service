@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/opensourceai/go-api-service/api"
-	"github.com/opensourceai/go-api-service/dao/mysql"
+	"github.com/opensourceai/go-api-service/internal/dao/mysql"
 	"github.com/opensourceai/go-api-service/pkg/gredis"
 	"github.com/opensourceai/go-api-service/pkg/logging"
 	"github.com/opensourceai/go-api-service/pkg/setting"

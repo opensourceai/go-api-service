@@ -2,10 +2,10 @@ package router
 
 import (
 	"fmt"
+	"github.com/opensourceai/go-api-service/internal/models"
+	"github.com/opensourceai/go-api-service/internal/service"
 	"github.com/opensourceai/go-api-service/middleware/jwt"
-	"github.com/opensourceai/go-api-service/models"
 	"github.com/opensourceai/go-api-service/pkg/logging"
-	"github.com/opensourceai/go-api-service/service"
 	"net/http"
 
 	"github.com/gin-gonic/gin"

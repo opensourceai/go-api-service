@@ -1,6 +1,6 @@
 package dao
 
-import "github.com/opensourceai/go-api-service/models"
+import "github.com/opensourceai/go-api-service/internal/models"
 
 type UserDao interface {
 	// 添加用户

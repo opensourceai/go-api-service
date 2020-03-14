@@ -2,10 +2,10 @@ package v1
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/opensourceai/go-api-service/internal/service"
 	"github.com/opensourceai/go-api-service/pkg/app"
 	"github.com/opensourceai/go-api-service/pkg/e"
 	"github.com/opensourceai/go-api-service/pkg/page"
-	"github.com/opensourceai/go-api-service/service"
 	"net/http"
 	"strconv"
 )
