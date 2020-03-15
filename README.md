@@ -78,6 +78,32 @@ Swagger doc: http://localhost:8000/swagger/index.html
 ```
 - userName:hive
 - password:hive
+
+## Dev
+1. fork repository
+2. clone repository
+   ```shell script
+   # [git@github.com:chenquan/go-api-service.git]为自己账户下仓库地址
+   git clone git@github.com:chenquan/go-api-service.git
+   cd go-api-service 
+   ```
+3. 开发新功能前必须拉去主库代码到本地master
+    
+    1. 新建远程库连接(`只需第一次clone之后设置`)
+    ```shell script
+     git remote add opensourceai git@github.com:opensourceai/go-api-service.git
+    ```
+    2. 拉取主库最新master代码到本地master
+    ```shell script
+    git pull opensourceai master:master --rebase -f
+    ```
+4. 开发新功能/修改
+    1. 从本地master分支新建出`feature-*`（`fix-*`）分支（`*`表示对应新功能名称）
+    2. 开发完毕之后，push到自己账号下的仓库
+    3. 通过PR使用squash方式合并到主库
+5. 后续开发循环`3`,`4`
+   
+   
 ## Features
 
 - RESTful API
