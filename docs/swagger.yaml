@@ -193,7 +193,7 @@ paths:
       summary: auth测试
       tags:
         - Auth
-  /v1/broad:
+  /v1/board:
     get:
       produces:
         - application/json
@@ -208,8 +208,8 @@ paths:
             $ref: '#/definitions/app.Response'
       summary: 获取全部版块列表信息
       tags:
-        - Broad
-  /v1/broad/{id}:
+        - Board
+  /v1/board/{id}:
     get:
       parameters:
         - description: id
@@ -230,8 +230,8 @@ paths:
             $ref: '#/definitions/app.Response'
       summary: 获取某版块信息
       tags:
-        - Broad
-  /v1/broad/{id}/posts:
+        - Board
+  /v1/board/{id}/posts:
     get:
       parameters:
         - description: id
@@ -268,7 +268,7 @@ paths:
             $ref: '#/definitions/app.Response'
       summary: 获取某版块的帖子
       tags:
-        - Broad
+        - Board
   /v1/post:
     delete:
       parameters:

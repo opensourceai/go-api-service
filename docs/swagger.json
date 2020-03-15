@@ -120,13 +120,13 @@
           }
         }
       },
-      "/v1/broad": {
+      "/v1/board": {
         "get": {
           "produces": [
             "application/json"
           ],
           "tags": [
-            "Broad"
+            "Board"
           ],
           "summary": "获取全部版块列表信息",
           "responses": {
@@ -145,13 +145,13 @@
           }
         }
       },
-      "/v1/broad/{id}": {
+      "/v1/board/{id}": {
         "get": {
           "produces": [
             "application/json"
           ],
           "tags": [
-            "Broad"
+            "Board"
           ],
           "summary": "获取某版块信息",
           "parameters": [
@@ -179,13 +179,13 @@
           }
         }
       },
-      "/v1/broad/{id}/posts": {
+      "/v1/board/{id}/posts": {
         "get": {
           "produces": [
             "application/json"
           ],
           "tags": [
-            "Broad"
+            "Board"
           ],
           "summary": "获取某版块的帖子",
           "parameters": [

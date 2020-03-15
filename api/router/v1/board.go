@@ -15,22 +15,22 @@ var boardService service.BoardService
 func init() {
 	boardService = new(service.BoardServiceImpl)
 }
-func BroadApi(router *gin.Engine) {
-	broad := router.Group("/v1/broad")
+func BoardApi(router *gin.Engine) {
+	broad := router.Group("/v1/board")
 	{
-		broad.GET("", GetBroadList)
-		broad.GET("/:id", GetBroad)
-		broad.GET("/:id/posts", GetPostListInBroad)
+		broad.GET("", GetBoardList)
+		broad.GET("/:id", GetBoard)
+		broad.GET("/:id/posts", GetPostListInBoard)
 	}
 }
 
 // @Summary 获取全部版块列表信息
-// @Tags Broad
+// @Tags Board
 // @Produce  json
 // @Success 200 {object} app.Response
 // @Failure 500 {object} app.Response
-// @Router /v1/broad [get]
-func GetBroadList(context *gin.Context) {
+// @Router /v1/board [get]
+func GetBoardList(context *gin.Context) {
 	appG := app.Gin{C: context}
 	if boards, err := boardService.GetBoardList(); err == nil {
 		appG.Success(boards)
@@ -40,13 +40,13 @@ func GetBroadList(context *gin.Context) {
 }
 
 // @Summary 获取某版块信息
-// @Tags Broad
+// @Tags Board
 // @Produce  json
 // @Param id path string true "id"
 // @Success 200 {object} app.Response
 // @Failure 500 {object} app.Response
-// @Router /v1/broad/{id} [get]
-func GetBroad(context *gin.Context) {
+// @Router /v1/board/{id} [get]
+func GetBoard(context *gin.Context) {
 	appG := app.Gin{C: context}
 	id := context.Param("id")
 	if id == "" {
@@ -67,14 +67,14 @@ func GetBroad(context *gin.Context) {
 }
 
 // @Summary 获取某版块的帖子
-// @Tags Broad
+// @Tags Board
 // @Produce  json
 // @Param id path string true "id"
 // @Param page query page.Page true "page"
 // @Success 200 {object} app.Response
 // @Failure 500 {object} app.Response
-// @Router /v1/broad/{id}/posts [get]
-func GetPostListInBroad(context *gin.Context) {
+// @Router /v1/board/{id}/posts [get]
+func GetPostListInBoard(context *gin.Context) {
 	appG := app.Gin{C: context}
 
 	// 板块ID

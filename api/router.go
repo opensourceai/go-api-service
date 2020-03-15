@@ -44,7 +44,7 @@ func InitRouter() *gin.Engine {
 	// 帖子
 	v1.PostApi(r)
 	// 版块
-	v1.BroadApi(r)
+	v1.BoardApi(r)
 
 	return r
 }
