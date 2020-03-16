@@ -1,6 +1,7 @@
 package service
 
 import (
+	"github.com/google/wire"
 	"github.com/opensourceai/go-api-service/internal/dao"
 	"github.com/opensourceai/go-api-service/internal/dao/mysql"
 	"github.com/opensourceai/go-api-service/internal/models"
@@ -15,32 +16,35 @@ type PostService interface {
 	// 获取某和主题的信息
 	GetPost(id string) (post *models.Post, err error)
 }
-type PostServiceImpl struct{}
-
-func (i PostServiceImpl) GetPost(id string) (post *models.Post, err error) {
-	return postDao.GetPost(id)
+type postService struct {
+	dao.PostDao
 }
 
-func (i PostServiceImpl) UpdatePost(userId string, post *models.Post) (err error) {
+var ProviderPost = wire.NewSet(NewPostService, mysql.NewPostDao)
 
-	return postDao.UpdatePost(userId, post)
+func NewPostService(dao2 dao.PostDao) (PostService, error) {
+	return &postService{dao2}, nil
 }
 
-func (i PostServiceImpl) GetOwnPost(page *page.Page, userId string) (postList *page.Result, err error) {
-	return postDao.GetOwnPost(page, userId)
+func (service postService) GetPost(id string) (post *models.Post, err error) {
+	return service.DaoGetPost(id)
 }
 
-var postDao dao.PostDao
+func (service postService) UpdatePost(userId string, post *models.Post) (err error) {
 
-func init() {
-	postDao = new(mysql.PostDaoImpl)
-}
-func (PostServiceImpl) DeletePost(userId string, ids ...int) (err error) {
-	return postDao.DeleteByIds(userId, ids...)
+	return service.DaoUpdatePost(userId, post)
 }
 
-func (PostServiceImpl) AddPost(p *models.Post) (err error) {
+func (service postService) GetOwnPost(page *page.Page, userId string) (postList *page.Result, err error) {
+	return service.DaoGetOwnPost(page, userId)
+}
 
-	err = postDao.Add(p)
+func (service postService) DeletePost(userId string, ids ...int) (err error) {
+	return service.DaoDeleteByIds(userId, ids...)
+}
+
+func (service postService) AddPost(p *models.Post) (err error) {
+
+	err = service.DaoAdd(p)
 	return
 }

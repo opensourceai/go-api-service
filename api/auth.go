@@ -1,7 +1,8 @@
-package router
+package api
 
 import (
 	"fmt"
+	"github.com/google/wire"
 	"github.com/opensourceai/go-api-service/internal/models"
 	"github.com/opensourceai/go-api-service/internal/service"
 	"github.com/opensourceai/go-api-service/middleware/jwt"
@@ -19,13 +20,20 @@ type auth struct {
 	Password string `valid:"Required; MaxSize(50)"` // 密码
 }
 
-var userService service.UserService
-
-func init() {
-	userService = new(service.UserServiceImpl)
+type UserApi struct {
 }
 
-func AuthApi(router *gin.Engine) {
+var ProviderAuth = wire.NewSet(NewAuthApi, service.ProviderUser)
+
+func NewAuthApi(service2 service.UserService) (*UserApi, error) {
+	userService = service2
+	return &UserApi{}, nil
+}
+
+var userService service.UserService
+
+//
+func NewAuthRouter(router *gin.Engine) {
 	auth := router.Group("/auth")
 	{
 		auth.POST("/login", login)
@@ -37,6 +45,7 @@ func AuthApi(router *gin.Engine) {
 		group.GET("/test", authTest)
 
 	}
+
 }
 
 // @Summary 获取认证信息

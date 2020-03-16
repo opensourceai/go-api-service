@@ -4,14 +4,17 @@ import (
 	"encoding/json"
 	"github.com/gomodule/redigo/redis"
 	"github.com/opensourceai/go-api-service/pkg/setting"
+	"log"
 	"time"
 )
 
-var RedisConn *redis.Pool
+type RedisDao struct {
+	redisConn *redis.Pool
+}
 
 // Setup Initialize the Redis instance
-func Setup() error {
-	RedisConn = &redis.Pool{
+func NewRedis() (*RedisDao, func(), error) {
+	redisConn := &redis.Pool{
 		MaxIdle:     setting.RedisSetting.MaxIdle,
 		MaxActive:   setting.RedisSetting.MaxActive,
 		IdleTimeout: setting.RedisSetting.IdleTimeout,
@@ -33,13 +36,18 @@ func Setup() error {
 			return err
 		},
 	}
+	closeup := func() {
+		if err := redisConn.Close(); err != nil {
+			log.Println(err)
+		}
+	}
+	return &RedisDao{redisConn: redisConn}, closeup, nil
 
-	return nil
 }
 
 // Set a key/value
-func Set(key string, data interface{}, time int) error {
-	conn := RedisConn.Get()
+func (r *RedisDao) Set(key string, data interface{}, time int) error {
+	conn := r.redisConn.Get()
 	defer conn.Close()
 
 	value, err := json.Marshal(data)
@@ -61,8 +69,8 @@ func Set(key string, data interface{}, time int) error {
 }
 
 // Exists check a key
-func Exists(key string) bool {
-	conn := RedisConn.Get()
+func (r *RedisDao) Exists(key string) bool {
+	conn := r.redisConn.Get()
 	defer conn.Close()
 
 	exists, err := redis.Bool(conn.Do("EXISTS", key))
@@ -74,8 +82,8 @@ func Exists(key string) bool {
 }
 
 // Get get a key
-func Get(key string) ([]byte, error) {
-	conn := RedisConn.Get()
+func (r *RedisDao) Get(key string) ([]byte, error) {
+	conn := r.redisConn.Get()
 	defer conn.Close()
 
 	reply, err := redis.Bytes(conn.Do("GET", key))
@@ -87,16 +95,16 @@ func Get(key string) ([]byte, error) {
 }
 
 // Delete delete a kye
-func Delete(key string) (bool, error) {
-	conn := RedisConn.Get()
+func (r *RedisDao) Delete(key string) (bool, error) {
+	conn := r.redisConn.Get()
 	defer conn.Close()
 
 	return redis.Bool(conn.Do("DEL", key))
 }
 
 // LikeDeletes batch delete
-func LikeDeletes(key string) error {
-	conn := RedisConn.Get()
+func (r *RedisDao) LikeDeletes(key string) error {
+	conn := r.redisConn.Get()
 	defer conn.Close()
 
 	keys, err := redis.Strings(conn.Do("KEYS", "*"+key+"*"))
@@ -105,7 +113,7 @@ func LikeDeletes(key string) error {
 	}
 
 	for _, key := range keys {
-		_, err = Delete(key)
+		_, err = r.Delete(key)
 		if err != nil {
 			return err
 		}

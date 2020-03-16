@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/opensourceai/go-api-service/api"
-	"github.com/opensourceai/go-api-service/internal/dao/mysql"
-	"github.com/opensourceai/go-api-service/pkg/gredis"
 	"github.com/opensourceai/go-api-service/pkg/logging"
 	"github.com/opensourceai/go-api-service/pkg/setting"
 	"github.com/opensourceai/go-api-service/pkg/util"
@@ -15,12 +13,7 @@ import (
 
 func init() {
 	setting.Setup()
-	mysql.Setup()
 	logging.Setup()
-	if err := gredis.Setup(); err != nil {
-		panic(err)
-	}
-
 	util.Setup()
 }
 
@@ -35,8 +28,11 @@ func init() {
 
 func main() {
 	gin.SetMode(setting.ServerSetting.RunMode)
-
-	routersInit := api.InitRouter()
+	_, cleanup, err := api.InitApi()
+	if err != nil && cleanup != nil {
+		cleanup()
+	}
+	routersInit := api.NewApi()
 	readTimeout := setting.ServerSetting.ReadTimeout
 	writeTimeout := setting.ServerSetting.WriteTimeout
 	endPoint := fmt.Sprintf(":%d", setting.ServerSetting.HttpPort)

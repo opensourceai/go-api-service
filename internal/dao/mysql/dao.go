@@ -9,12 +9,12 @@ import (
 	"time"
 )
 
-var db *gorm.DB
+//var Provider = wire.NewSet(NewDao, NewBoardDao, NewPostDao, NewUserDao)
 
 // Setup initializes the database instance
-func Setup() {
-	var err error
-	db, err = gorm.Open(setting.DatabaseSetting.Type, fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8&parseTime=True&loc=Local",
+func NewDao() (*gorm.DB, func(), error) {
+
+	db, err := gorm.Open(setting.DatabaseSetting.Type, fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8&parseTime=True&loc=Local",
 		setting.DatabaseSetting.User,
 		setting.DatabaseSetting.Password,
 		setting.DatabaseSetting.Host,
@@ -34,11 +34,12 @@ func Setup() {
 	db.Callback().Delete().Replace("gorm:delete", deleteCallback)
 	db.DB().SetMaxIdleConns(10)
 	db.DB().SetMaxOpenConns(100)
-}
-
-// CloseDB closes database connection (unnecessary)
-func CloseDB() {
-	defer db.Close()
+	closeup := func() {
+		if err := db.Close(); err != nil {
+			log.Println(err)
+		}
+	}
+	return db, closeup, err
 }
 
 // updateTimeStampForCreateCallback will set `CreatedOn`, `ModifiedOn` when creating

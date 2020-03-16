@@ -6,7 +6,7 @@ import (
 )
 
 type BoardDao interface {
-	GetBoardList() (broads []models.Board, err error)
-	GetPostList(id int, page *page.Page) (result *page.Result, err error)
-	GetBoard(idInt int) (board *models.Board, err error)
+	DaoGetBoardList() (broads []models.Board, err error)
+	DaoGetPostList(id int, page *page.Page) (result *page.Result, err error)
+	DaoGetBoard(idInt int) (board *models.Board, err error)
 }

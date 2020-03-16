@@ -2,6 +2,7 @@ package v1
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/google/wire"
 	"github.com/jinzhu/gorm"
 	"github.com/opensourceai/go-api-service/internal/models"
 	"github.com/opensourceai/go-api-service/internal/service"
@@ -13,12 +14,19 @@ import (
 	"strconv"
 )
 
+type PostApi struct {
+}
+
+var ProviderPost = wire.NewSet(NewPostApi, service.ProviderPost)
+
 var postService service.PostService
 
-func init() {
-	postService = new(service.PostServiceImpl)
+func NewPostApi(service2 service.PostService) (*PostApi, error) {
+	postService = service2
+	return &PostApi{}, nil
 }
-func PostApi(router *gin.Engine) {
+
+func NewPostRouter(router *gin.Engine) {
 	post := router.Group("/v1/post")
 	// 无需认证
 	{

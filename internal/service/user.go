@@ -2,6 +2,7 @@ package service
 
 import (
 	"errors"
+	"github.com/google/wire"
 	"github.com/opensourceai/go-api-service/internal/dao"
 	"github.com/opensourceai/go-api-service/internal/dao/mysql"
 	"github.com/opensourceai/go-api-service/internal/models"
@@ -13,21 +14,24 @@ type UserService interface {
 	Login(user models.User) (*models.User, bool, error)
 }
 
-type UserServiceImpl struct{}
-
-var userDao dao.UserDao
-
-func init() {
-	userDao = new(mysql.UserDaoImpl)
+type userService struct {
+	dao.UserDao
 }
-func (UserServiceImpl) Register(user *models.User) error {
+
+var ProviderUser = wire.NewSet(NewUserService, mysql.NewUserDao)
+
+func NewUserService(dao2 dao.UserDao) (UserService, error) {
+	return &userService{dao2}, nil
+
+}
+func (service userService) Register(user *models.User) error {
 	// 加密密码
 	user.Password = util.EncodeMD5(user.Password)
-	return userDao.Add(user)
+	return service.DaoAdd(user)
 }
 
-func (i UserServiceImpl) Login(user models.User) (*models.User, bool, error) {
-	err, u := userDao.GetUserByUsername(user.Username)
+func (service userService) Login(user models.User) (*models.User, bool, error) {
+	err, u := service.DaoGetUserByUsername(user.Username)
 	if err != nil {
 		return nil, false, errors.New("登录失败")
 	}

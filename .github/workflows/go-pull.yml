@@ -25,4 +25,9 @@ jobs:
           fi
 
       - name: Build
-        run: go build -v .
+        run: |
+          export PATH=$PATH:$(go env GOPATH)/bin
+          go get github.com/google/wire/cmd/wire
+          cd api
+          wire
+          cd .. && go build -v .
