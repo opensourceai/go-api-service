@@ -44,7 +44,7 @@ func Valid(form interface{}) (int, int) {
 }
 
 type Auth struct {
-	UserId   string `json:"user_id"`
+	UserId   int    `json:"user_id"`
 	Username string `json:"username"`
 }
 
@@ -59,8 +59,9 @@ func GetUserInfo(content *gin.Context) *Auth {
 	if username, exists = content.Get("username"); !exists {
 		panic("认证失败")
 	}
+
 	return &Auth{
-		UserId:   com.ToStr(userId),
+		UserId:   userId.(int),
 		Username: com.ToStr(username),
 	}
 

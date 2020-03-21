@@ -17,6 +17,8 @@ var msgFlags = map[int]string{
 
 	ERROR_POST_EXIST:     "主题已存在",
 	ERROR_POST_NOT_EXIST: "主题不存在",
+
+	ERROR_COMMENT: "评论错误",
 }
 
 // GetMsg get error information based on Code

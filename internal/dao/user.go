@@ -11,4 +11,6 @@ type UserDao interface {
 	DaoEdit(user *models.User) error
 	// 获取该用户名的用户信息
 	DaoGetUserByUsername(username string) (err error, user models.User)
+	// 查询ids中所有用户
+	DaoFindByIds(ids ...int) (users []models.User, err error)
 }

@@ -1,7 +1,22 @@
+/*
+ *    Copyright 2020 opensourceai
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+
 package page
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	"math"
@@ -15,13 +30,21 @@ type Page struct {
 	Sorter  string `json:"sorter"`              // 升序, 降序
 
 }
+type Option struct {
+	//Data      interface{} `json:"data"`       // 数据
+	Total     int    `json:"total"`      // 总条数
+	TotalPage int    `json:"total_page"` // 总页数
+	NextPage  int    `json:"next_page"`  // 上一页
+	PrevPage  int    `json:"prev_page"`  // 下一页
+	Offset    int    `json:"-"`          // 偏移
+	Limit     int    `json:"-"`          // 条数
+	Order     string `json:"-"`          // 排序规则
+}
+
 type Result struct {
-	Page
-	Data      interface{} `json:"data"`       // 数据
-	Total     int         `json:"total"`      // 总条数
-	TotalPage int         `json:"total_page"` // 总页数
-	NextPage  int         `json:"next_page"`  // 上一页
-	PrevPage  int         `json:"prev_page"`  // 下一页
+	*Page
+	Data interface{} `json:"data"` // 数据
+	*Option
 }
 
 func NewPage(page, size int, orderBy, sorter string) *Page {
@@ -41,37 +64,8 @@ func NewDefaultPage(page, size int) *Page {
 		Sorter:  "asc",
 	}
 }
-func ExeMysqlPage(db *gorm.DB, model interface{}, page *Page, query interface{}, args ...string) (result *Result, err error) {
-	var total int
-	if err = db.Model(model).Where(query, args).Count(&total).Error; err != nil {
-		return
-	}
 
-	totalPageNum := int(math.Floor(float64(total / page.Size)))
-	offset := totalPageNum * (page.PageNum)
-	order := page.OrderBy + " " + page.Sorter
-	if err = db.Offset(offset).Limit(page.Size).Order(order).Where(query, args).Find(model).Error; err != nil {
-		fmt.Println("err", err)
-
-		panic(err)
-		return
-	}
-	fmt.Println(model)
-	var pervPage = page.PageNum + 1
-	if pervPage > totalPageNum {
-		pervPage = -1
-	}
-	result = &Result{
-		Page:      *page,
-		Data:      model,
-		Total:     total,
-		TotalPage: totalPageNum,
-		NextPage:  page.PageNum - 1,
-		PrevPage:  pervPage,
-	}
-
-	return
-}
+// 单表查询分页工具函数
 func PageHelper(condition *gorm.DB, model interface{}, page *Page) (result *Result, err error) {
 
 	var total int
@@ -100,15 +94,19 @@ func PageHelper(condition *gorm.DB, model interface{}, page *Page) (result *Resu
 	}
 	// 结果
 	result = &Result{
-		Page:      *page,
-		Data:      model,
-		Total:     total,
-		TotalPage: totalPageNum,
-		NextPage:  nextPage,
-		PrevPage:  pervPage,
+		Page: page,
+		Data: model,
+		Option: &Option{
+			Total:     total,
+			TotalPage: totalPageNum,
+			NextPage:  nextPage,
+			PrevPage:  pervPage,
+		},
 	}
 	return
 }
+
+// 从gin.Context绑定Page
 func BindPage(context *gin.Context) (p *Page) {
 	var err error
 	// 第几页
@@ -150,6 +148,45 @@ func BindPage(context *gin.Context) (p *Page) {
 		Size:    pageSizeInt,
 		OrderBy: orderBy,
 		Sorter:  sorter,
+	}
+	return
+}
+
+// 返回分页option属性,
+func PageHelperOption(condition *gorm.DB, model interface{}, page *Page) (result *Option, err error) {
+
+	var total int
+	if err = condition.Model(model).Count(&total).Error; err != nil {
+		return
+	}
+
+	var nextPage int                                                       // 下一页
+	var pervPage int                                                       // 上一页
+	var totalPageNum = int(math.Ceil(float64(total) / float64(page.Size))) // 总页数
+	var offset int
+	var order string
+	if page.PageNum > totalPageNum {
+		pervPage = -1
+		nextPage = -1
+	} else {
+		offset = page.Size * (page.PageNum)
+		order = page.OrderBy + " " + page.Sorter
+
+		nextPage = page.PageNum - 1
+		pervPage = page.PageNum + 1
+		if pervPage+1 > totalPageNum {
+			pervPage = -1
+		}
+	}
+	// 结果
+	result = &Option{
+		Total:     total,
+		TotalPage: totalPageNum,
+		NextPage:  nextPage,
+		PrevPage:  pervPage,
+		Offset:    offset,
+		Limit:     page.Size,
+		Order:     order,
 	}
 	return
 }

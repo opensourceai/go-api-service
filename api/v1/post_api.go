@@ -1,3 +1,19 @@
+/*
+ *    Copyright 2020 opensourceai
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+
 package v1
 
 import (
@@ -10,6 +26,7 @@ import (
 	"github.com/opensourceai/go-api-service/pkg/app"
 	"github.com/opensourceai/go-api-service/pkg/e"
 	"github.com/opensourceai/go-api-service/pkg/page"
+	"github.com/unknwon/com"
 	"net/http"
 	"strconv"
 )
@@ -31,6 +48,8 @@ func NewPostRouter(router *gin.Engine) {
 	// 无需认证
 	{
 		post.GET("/:id", getPost)
+		post.GET("/:id/comments", getPostComments)
+
 	}
 	// 需认证
 	post.Use(jwt.JWT())
@@ -43,13 +62,43 @@ func NewPostRouter(router *gin.Engine) {
 
 }
 
+// @Summary 获取帖子的评论
+// @Tags Post
+// @Produce  json
+// @Param id path string true "ID"
+// @Param page query page.Page false "page"
+// @Success 200 {object} app.Response
+// @Failure 500 {object} app.Response
+// @Router /v1/post/{id}/comments [get]
+func getPostComments(context *gin.Context) {
+	appG := app.Gin{C: context}
+	bindPage := page.BindPage(context)
+	id := context.Param("id")
+	if id == "" {
+
+		return
+	}
+	var idInt int // 主题ID
+	var err error // 错误
+	idInt, err = strconv.Atoi(id)
+	if err != nil {
+		return
+	}
+
+	comments, err := postService.ServiceGetPostComments(idInt, bindPage)
+	if err != nil {
+		appG.Fail(nil)
+		return
+	}
+	appG.Success(comments)
+}
+
 // @Summary 获取帖子信息
 // @Tags Post
 // @Produce  json
 // @Param id path string true "id"
 // @Success 200 {object} app.Response
 // @Failure 500 {object} app.Response
-// @Security ApiKeyAuth
 // @Router /v1/post/{id} [get]
 func getPost(context *gin.Context) {
 	appG := app.Gin{C: context}
@@ -90,7 +139,7 @@ func updatePost(context *gin.Context) {
 		return
 	}
 	userInfo := app.GetUserInfo(context)
-	if err := postService.UpdatePost(userInfo.UserId, &post); err == gorm.ErrRecordNotFound {
+	if err := postService.UpdatePost(com.ToStr(userInfo.UserId), &post); err == gorm.ErrRecordNotFound {
 		appG.Response(http.StatusNotFound, e.NOT_FOUND, nil)
 		return
 	} else if err != nil {
@@ -162,7 +211,7 @@ func getPostList(context *gin.Context) {
 	}
 	info := app.GetUserInfo(context)
 
-	if post, err := postService.GetOwnPost(pageObj, info.UserId); err != nil {
+	if post, err := postService.GetOwnPost(pageObj, com.ToStr(info.UserId)); err != nil {
 		appG.Response(http.StatusBadRequest, e.ERROR, post)
 		return
 	} else {
@@ -197,7 +246,7 @@ func deletePost(context *gin.Context) {
 	//token := context.GetHeader("Authorization")
 	//userId, exists := context.Get("userId")
 	userInfo := app.GetUserInfo(context)
-	if err := postService.DeletePost(userInfo.UserId, postIds.Ids...); err != nil {
+	if err := postService.DeletePost(com.ToStr(userInfo.UserId), postIds.Ids...); err != nil {
 		if err == gorm.ErrRecordNotFound {
 			appG.Response(http.StatusBadRequest, e.ERROR_POST_NOT_EXIST, nil)
 			return

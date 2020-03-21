@@ -16,12 +16,10 @@
 
 package models
 
-// 帖子
-type Post struct {
+type Comment struct {
 	Model
-	Title   string `json:"title" gorm:"column:title" valid:"Required"`       // 标题
-	Content string `json:"content" gorm:"column:content" valid:"Required"`   // 内容
-	Summary string `json:"summary" gorm:"column:summary"`                    // 摘要
-	UserID  int    `json:"user_id" gorm:"column:user_id" valid:"Required"`   // 用户ID
-	BoardID int    `json:"board_id" gorm:"column:board_id" valid:"Required"` // 版块ID
+	CommentContent string `json:"comment_content"` // 评论内容
+	PostID         int    `json:"post_id"`         // 主题ID
+	FromUserID     int    `json:"from_user_id"`    // 评论者ID
+	ToUserID       int    `json:"to_user_id"`      // 被评论者ID
 }

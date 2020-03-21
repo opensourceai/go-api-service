@@ -6,14 +6,16 @@ import (
 )
 
 type Api struct {
-	BoardApi *v1.BoardApi
-	PostApi  *v1.PostApi
-	UserAPi  *UserApi
+	BoardApi   *v1.BoardApi
+	PostApi    *v1.PostApi
+	UserAPi    *UserApi
+	CommentAPi *v1.CommentApi
 }
 
 var providerApi = wire.NewSet(
 	v1.ProviderBoard,
 	v1.ProviderPost,
+	v1.ProviderComment,
 	ProviderAuth,
 )
 var Provider = wire.NewSet(providerApi, wire.Struct(new(Api), "*"))

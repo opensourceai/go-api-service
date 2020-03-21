@@ -1,18 +1,60 @@
+/*
+ *    Copyright 2020 opensourceai
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+
 package mysql
 
 import (
+	"errors"
 	"github.com/jinzhu/gorm"
 	"github.com/opensourceai/go-api-service/internal/dao"
+	"github.com/opensourceai/go-api-service/internal/dao/do"
 	"github.com/opensourceai/go-api-service/internal/models"
 	"github.com/opensourceai/go-api-service/pkg/page"
 )
+
+func NewPostDao(db *gorm.DB) (dao.PostDao, error) {
+	return &postDao{DB: db}, nil
+}
 
 type postDao struct {
 	*gorm.DB
 }
 
-func NewPostDao(db *gorm.DB) (dao.PostDao, error) {
-	return &postDao{DB: db}, nil
+func (dao postDao) GetPostComments(id int, p *page.Page) (*page.Result, error) {
+	var comments []do.CommentDO
+
+	option, err := page.PageHelperOption(dao.Where("post_id = ?", id), &models.Comment{}, p)
+	if err != nil {
+
+		return nil, errors.New("")
+	}
+	dao.Preload("FromUser").
+		Preload("ToUser").
+		Where("post_id = ?", id).
+		Offset(option.Offset).
+		Limit(option.Limit).
+		Order(option.Order).
+		Find(&comments)
+	p1 := &page.Result{Page: p, Data: comments, Option: option}
+	return p1, nil
+
+}
+
+func (dao postDao) DaoGetPostAllComments(id int) (result *page.Result, err error) {
+	panic("implement me")
 }
 func (dao postDao) DaoUpdatePost(userId string, post *models.Post) (err error) {
 	// 该帖子是否属于该用户

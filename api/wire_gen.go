@@ -81,10 +81,29 @@ func InitApi() (*Api, func(), error) {
 		cleanup()
 		return nil, nil, err
 	}
+	commentDao, err := mysql.NewCommentDao(db)
+	if err != nil {
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
+	commentService, err := service.NewCommentService(commentDao, userDao, postDao)
+	if err != nil {
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
+	commentApi, err := v1.NewCommentService(commentService)
+	if err != nil {
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
 	api := &Api{
-		BoardApi: boardApi,
-		PostApi:  postApi,
-		UserAPi:  userApi,
+		BoardApi:   boardApi,
+		PostApi:    postApi,
+		UserAPi:    userApi,
+		CommentAPi: commentApi,
 	}
 	return api, func() {
 		cleanup2()
