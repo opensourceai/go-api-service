@@ -20,14 +20,14 @@ type auth struct {
 	Password string `valid:"Required; MaxSize(50)"` // 密码
 }
 
-type UserApi struct {
+type AuthApi struct {
 }
 
-var ProviderAuth = wire.NewSet(NewAuthApi, service.ProviderUser)
+var ProviderAuth = wire.NewSet(NewAuthApi)
 
-func NewAuthApi(service2 service.UserService) (*UserApi, error) {
+func NewAuthApi(service2 service.UserService) (*AuthApi, error) {
 	userService = service2
-	return &UserApi{}, nil
+	return &AuthApi{}, nil
 }
 
 var userService service.UserService
@@ -108,6 +108,8 @@ func register(c *gin.Context) {
 	}
 	appG.Response(http.StatusOK, e.SUCCESS, nil)
 }
+
+
 
 // @Summary auth测试
 // @Tags Auth

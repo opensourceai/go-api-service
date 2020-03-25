@@ -63,25 +63,13 @@ func InitApi() (*Api, func(), error) {
 		cleanup()
 		return nil, nil, err
 	}
-	userDao, err := mysql.NewUserDao(db)
-	if err != nil {
-		cleanup2()
-		cleanup()
-		return nil, nil, err
-	}
-	serviceUserService, err := service.NewUserService(userDao)
-	if err != nil {
-		cleanup2()
-		cleanup()
-		return nil, nil, err
-	}
-	userApi, err := NewAuthApi(serviceUserService)
-	if err != nil {
-		cleanup2()
-		cleanup()
-		return nil, nil, err
-	}
 	commentDao, err := mysql.NewCommentDao(db)
+	if err != nil {
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
+	userDao, err := mysql.NewUserDao(db)
 	if err != nil {
 		cleanup2()
 		cleanup()
@@ -99,11 +87,30 @@ func InitApi() (*Api, func(), error) {
 		cleanup()
 		return nil, nil, err
 	}
+	serviceUserService, err := service.NewUserService(userDao)
+	if err != nil {
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
+	authApi, err := NewAuthApi(serviceUserService)
+	if err != nil {
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
+	userApi, err := v1.NewUserApi(serviceUserService)
+	if err != nil {
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
 	api := &Api{
 		BoardApi:   boardApi,
 		PostApi:    postApi,
-		UserAPi:    userApi,
 		CommentAPi: commentApi,
+		AuthApi:    authApi,
+		UserApi:    userApi,
 	}
 	return api, func() {
 		cleanup2()

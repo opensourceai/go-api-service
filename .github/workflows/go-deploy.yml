@@ -27,10 +27,13 @@ jobs:
       - name: Build
         run: |
           export PATH=$PATH:$(go env GOPATH)/bin
+          go get -u github.com/swaggo/swag/cmd/swag
           go get github.com/google/wire/cmd/wire
+          swag init
           cd api
           wire
           cd .. && go build -v .
+
   deploy:
     if: contains(github.repository, 'opensourceai')
     name: Deploy
