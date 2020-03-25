@@ -1,3 +1,19 @@
+/*
+ *    Copyright 2020 opensourceai
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+
 package service
 
 import (
@@ -20,8 +36,10 @@ type UserService interface {
 type userService struct {
 	dao.UserDao
 }
+
 //NewUserService方法依赖mysql.NewUserDao，需要传入实现了gorm方法的结构体
 var ProviderUser = wire.NewSet(NewUserService, mysql.NewUserDao)
+
 //参数需要一个实现了UserDao接口的结构体,返回一个实现了UserDao接口的业务结构体
 func NewUserService(dao2 dao.UserDao) (UserService, error) {
 	return &userService{dao2}, nil
@@ -46,7 +64,7 @@ func (service userService) Login(user models.User) (*models.User, bool, error) {
 	return nil, false, errors.New("登录失败")
 }
 
-func (service userService) UpdatePwd(username string, s string) error{
+func (service userService) UpdatePwd(username string, s string) error {
 	//通过用户名从数据库获取用户对象
 	_, u := service.DaoGetUserByUsername(username)
 	//修改密码
@@ -55,7 +73,7 @@ func (service userService) UpdatePwd(username string, s string) error{
 	return service.DaoEdit(&u)
 }
 
-func (service userService) UpdateMsg(username string, user *models.User) error{
+func (service userService) UpdateMsg(username string, user *models.User) error {
 	//通过用户名从数据库获取用户对象
 	_, u := service.DaoGetUserByUsername(username)
 	//修改内容
