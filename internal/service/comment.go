@@ -41,10 +41,10 @@ type commentService struct {
 type CommentService interface {
 	ServiceAdd(userId int, comment *models.Comment) (err error)
 	ServiceDeleteByIds(userId int, ids *dto.Ids) (err error)
-	ServiceUpdate(userId int, comment *dto.CommentUpdate) (err error)
+	ServiceUpdate(userId int, comment *dto.CommentUpdateDTO) (err error)
 }
 
-func (service *commentService) ServiceUpdate(userId int, comment *dto.CommentUpdate) (err error) {
+func (service *commentService) ServiceUpdate(userId int, comment *dto.CommentUpdateDTO) (err error) {
 	c := &models.Comment{}
 	c.ID = comment.ID
 	c.CommentContent = comment.CommentContent

@@ -26,7 +26,7 @@ import (
 )
 
 // BindAndValid binds and validates data
-func BindAndValid(c *gin.Context, form interface{}) (int, int) {
+func BindAndValid(c *gin.Context, form interface{}) (httpCode, errCode int) {
 	err := c.Bind(form)
 	if err != nil {
 		return http.StatusBadRequest, e.INVALID_PARAMS

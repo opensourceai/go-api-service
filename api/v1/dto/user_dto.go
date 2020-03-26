@@ -18,13 +18,20 @@
  * @Package dto
  * @Author Quan Chen
  * @Date 2020/3/19
- * @Description
+ * @Description 用户相关数据传输结构体
  *
  */
 package dto
 
-type User struct {
-	ID       int    `json:"id"`       // 用户ID
-	Username string `json:"username"` // 用户名
-	Name     string `json:"name"`     // 名称
+type UserDTO struct {
+	ID          int    `json:"id" valid:"Required;Min(1)"` // 用户ID
+	Name        string `json:"name"`                       // 名称
+	Password    string `json:"password"`                   // 密码
+	Description string `json:"description"`                // 描述
+	Sex         string `json:"sex" valid:"MaxSize(1)"`     // 性别
+	AvatarSrc   string `json:"avatar_src"`                 // 头像地址
+	Email       string `json:"email" valid:"Email"`        // 电子邮件
+	WebSite     string `json:"web_site"`                   // 网站
+	Company     string `json:"company"`                    // 公司
+	Position    string `json:"position"`                   // 职位
 }

@@ -51,7 +51,7 @@ func NewCommentRouter(router *gin.Engine) {
 // @Summary 修改评论
 // @Tags Comment
 // @Produce  json
-// @Param comment body dto.CommentUpdate true "comment"
+// @Param comment body dto.CommentUpdateDTO true "comment"
 // @Success 200 {object} app.Response
 // @Failure 500 {object} app.Response
 // @Security ApiKeyAuth
@@ -60,7 +60,7 @@ func updateComment(context *gin.Context) {
 	appG := app.Gin{C: context}
 	// 获取当前用户信息
 	userInfo := app.GetUserInfo(context)
-	comment := &dto.CommentUpdate{}
+	comment := &dto.CommentUpdateDTO{}
 	app.BindAndValid(context, comment)
 	err := commentService.ServiceUpdate(userInfo.UserId, comment)
 	if err != nil {

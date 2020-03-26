@@ -19,8 +19,10 @@ package v1
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/wire"
+	"github.com/opensourceai/go-api-service/api/v1/dto"
 	"github.com/opensourceai/go-api-service/internal/models"
 	"github.com/opensourceai/go-api-service/internal/service"
+	"github.com/opensourceai/go-api-service/middleware/jwt"
 	"github.com/opensourceai/go-api-service/pkg/app"
 	"github.com/opensourceai/go-api-service/pkg/e"
 	"github.com/opensourceai/go-api-service/pkg/logging"
@@ -47,10 +49,39 @@ var ProviderUser = wire.NewSet(NewUserApi, service.ProviderUser)
 
 func NewUserRouter(router *gin.Engine) {
 	user := router.Group("/v1/user")
+	user.Use(jwt.JWT())
 	{
-		user.PUT("/update-pwd", updatePwd)
-		user.PUT("/update-message", updateMsg)
+		user.PUT("/pwd", updatePwd)
+		user.PUT("/message", updateMsg)
+		user.PUT("", updateUser)
 	}
+}
+
+// @Summary 用户密码修改或用户信息修改
+// @Tags User
+// @Produce  json
+// @Param user body dto.UserDTO true "user"
+// @Success 200 {object} app.Response
+// @Failure 500 {object} app.Response
+// @Security ApiKeyAuth
+// @Router /v1/user [put]
+func updateUser(context *gin.Context) {
+	appG := app.Gin{C: context}
+
+	userDTO := &dto.UserDTO{}
+	httpCode, errCode := app.BindAndValid(context, userDTO)
+	if errCode != e.SUCCESS {
+		appG.Response(httpCode, errCode, nil)
+		return
+	}
+	onlineUser := app.GetUserInfo(context)
+
+	if err := userService.UpdateUser(onlineUser, userDTO); err != nil {
+		appG.Fail(nil)
+		return
+	}
+
+	appG.Success(nil)
 }
 
 // @Summary 用户密码修改
@@ -59,7 +90,7 @@ func NewUserRouter(router *gin.Engine) {
 // @Param user body models.User true "user"
 // @Success 200 {object} app.Response
 // @Failure 500 {object} app.Response
-// @Router /v1/user/update-pwd [put]
+// @Router /v1/user/pwd [put]
 func updatePwd(c *gin.Context) {
 	user := models.User{}
 	//var newPwd string
@@ -85,7 +116,7 @@ func updatePwd(c *gin.Context) {
 // @Param user body models.User true "user"
 // @Success 200 {object} app.Response
 // @Failure 500 {object} app.Response
-// @Router /v1/user/update-message [put]
+// @Router /v1/user/message [put]
 func updateMsg(c *gin.Context) {
 	user := models.User{}
 

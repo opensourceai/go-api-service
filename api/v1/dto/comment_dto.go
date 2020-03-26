@@ -23,13 +23,7 @@
  */
 package dto
 
-type CommentUpdate struct {
+type CommentUpdateDTO struct {
 	ID             int    `json:"id"`              // 评论ID
 	CommentContent string `json:"comment_content"` // 评论的内容
-}
-type Comment struct {
-	ID             int    `json:"id"`              // 评论ID
-	CommentContent string `json:"comment_content"` // 评论内容
-	FromUser       User   `json:"from_user"`       // 评论者
-	ToUser         User   `json:"to_user"`         // 被评论者
 }

@@ -31,9 +31,14 @@ type userDao struct {
 	db *gorm.DB
 }
 
+func (dao *userDao) DaoUpdate(user *models.User) (err error) {
+	return dao.db.Model(&models.User{}).Updates(*user).Error
+}
+
 func (dao *userDao) DaoFindByIds(ids ...int) (users []models.User, err error) {
 	// 查询ids用户
-	err = dao.db.Where(ids).Find(users).Error
+	users = []models.User{}
+	err = dao.db.Where(ids).Find(&users).Error
 	return
 }
 
