@@ -30,6 +30,10 @@ type PostDao interface {
 	DaoFindAllByUserId(page page.Page, userId int) (err error, postList []models.Post)
 	// 返回该帖子的信息
 	DaoFindById(id int) (err error, post *models.Post)
+	// 返回帖子的信息
+	DaoFindByIds(ids ...int) (post []models.Post, err error)
+	// 查询主题帖是否在某版块
+	DaoFindByBoardIDAndIds(boardID int, ids ...int) (post []models.Post, err error)
 	// 更新帖子
 	DaoUpdate(post *models.Post) (err error)
 	DaoGetOwnPost(p *page.Page, userId string) (result *page.Result, err error)
@@ -37,4 +41,6 @@ type PostDao interface {
 	DaoGetPost(id string) (post *models.Post, err error)
 	DaoGetPostAllComments(id int) (result *page.Result, err error)
 	GetPostComments(id int, p *page.Page) (*page.Result, error)
+	// 移动主题帖到某个版块
+	DaoMovePosts(boardID int, ids ...int) (err error)
 }

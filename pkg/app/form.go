@@ -21,6 +21,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/unknwon/com"
 	"net/http"
+	"strconv"
 
 	"github.com/opensourceai/go-api-service/pkg/e"
 )
@@ -64,6 +65,7 @@ type Auth struct {
 	Username string `json:"username"`
 }
 
+// 获取gin上下文中的用户信息
 func GetUserInfo(content *gin.Context) *Auth {
 	var userId interface{}
 	var username interface{}
@@ -80,5 +82,19 @@ func GetUserInfo(content *gin.Context) *Auth {
 		UserId:   userId.(int),
 		Username: com.ToStr(username),
 	}
+
+}
+
+// 获取int类型查询参数
+func QueryWithInt(ctx *gin.Context, key string) (int, error) {
+	param := ctx.Query(key)
+	if param == "" {
+		return 0, nil
+	}
+	atoi, err := strconv.Atoi(param)
+	if err != nil {
+		return 0, err
+	}
+	return atoi, nil
 
 }

@@ -33,6 +33,28 @@ type postDao struct {
 	*gorm.DB
 }
 
+func (dao postDao) DaoMovePosts(boardID int, ids ...int) (err error) {
+	//开启事务处理
+	return dao.Transaction(func(tx *gorm.DB) error {
+		for _, id := range ids {
+			// 异常时回滚
+			return dao.Model(&models.Post{}).Where("id = ?", id).Update("board_id", boardID).Error
+		}
+		return nil
+	})
+}
+
+func (dao postDao) DaoFindByBoardIDAndIds(boardID int, ids ...int) (post []models.Post, err error) {
+	err = dao.Where("board_id = ? AND id  IN (?)", boardID, ids).Find(&post).Error
+	return
+}
+
+func (dao postDao) DaoFindByIds(ids ...int) (post []models.Post, err error) {
+	post = []models.Post{}
+	err = dao.Where(ids).Find(&post).Error
+	return
+}
+
 func (dao postDao) GetPostComments(id int, p *page.Page) (*page.Result, error) {
 	var comments []do.CommentDO
 

@@ -17,7 +17,9 @@
 package service
 
 import (
+	"errors"
 	"github.com/google/wire"
+	"github.com/opensourceai/go-api-service/api/v1/dto"
 	"github.com/opensourceai/go-api-service/internal/dao"
 	"github.com/opensourceai/go-api-service/internal/dao/mysql"
 	"github.com/opensourceai/go-api-service/internal/models"
@@ -26,8 +28,8 @@ import (
 
 var ProviderPost = wire.NewSet(NewPostService, mysql.NewPostDao)
 
-func NewPostService(dao2 dao.PostDao) (PostService, error) {
-	return &postService{dao2}, nil
+func NewPostService(dao2 dao.PostDao, board dao.BoardDao) (PostService, error) {
+	return &postService{dao2, board}, nil
 }
 
 type PostService interface {
@@ -39,9 +41,20 @@ type PostService interface {
 	GetPost(id string) (post *models.Post, err error)
 	// 获取主题的评论[分页]
 	ServiceGetPostComments(id int, p *page.Page) (result *page.Result, err error)
+	// 移动主题帖到某个版块
+	MovePosts(srcID, targetID int, postIDs *dto.Ids) (err error)
 }
 type postService struct {
-	postDao dao.PostDao
+	postDao  dao.PostDao
+	boardDao dao.BoardDao
+}
+
+func (service postService) MovePosts(srcID, targetID int, postIDs *dto.Ids) (err error) {
+	posts, err := service.postDao.DaoFindByBoardIDAndIds(srcID, postIDs.Ids...)
+	if len(posts) != len(postIDs.Ids) {
+		return errors.New("不存在")
+	}
+	return service.postDao.DaoMovePosts(targetID, postIDs.Ids...)
 }
 
 func (service postService) ServiceGetPostComments(id int, p *page.Page) (result *page.Result, err error) {

@@ -20,6 +20,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/wire"
 	"github.com/jinzhu/gorm"
+	"github.com/opensourceai/go-api-service/api/v1/dto"
 	"github.com/opensourceai/go-api-service/internal/models"
 	"github.com/opensourceai/go-api-service/internal/service"
 	"github.com/opensourceai/go-api-service/middleware/jwt"
@@ -44,7 +45,7 @@ func NewPostApi(service2 service.PostService) (*PostApi, error) {
 }
 
 func NewPostRouter(router *gin.Engine) {
-	post := router.Group("/v1/post")
+	post := router.Group("/v1/posts")
 	// 无需认证
 	{
 		post.GET("/:id", getPost)
@@ -58,8 +59,48 @@ func NewPostRouter(router *gin.Engine) {
 		post.DELETE("", deletePost)
 		post.GET("", getPostList)
 		post.PUT("", updatePost)
+		post.PUT("/board", movePost)
 	}
 
+}
+
+// @Summary 移动主题帖到其他版块
+// @Tags Post
+// @Produce  json
+// @Param src_id query string true "源版块ID"
+// @Param target_id query string true "目标版块ID"
+// @Param post_ids body dto.Ids true "被移动主题帖IDs"
+// @Success 200 {object} app.Response
+// @Failure 500 {object} app.Response
+// @Security ApiKeyAuth
+// @Router /v1/posts/board [put]
+func movePost(context *gin.Context) {
+	appG := app.Gin{C: context}
+	srcID, err := app.QueryWithInt(context, "src_id")
+	if err != nil {
+		appG.Fail(nil)
+		return
+	}
+	targetID, err := app.QueryWithInt(context, "target_id")
+
+	if err != nil {
+		appG.Fail(nil)
+		return
+	}
+
+	postIDs := &dto.Ids{}
+	httpCode, errCode := app.BindAndValid(context, postIDs)
+	if errCode != e.SUCCESS {
+		appG.Response(httpCode, errCode, nil)
+		return
+	}
+	// 移动主题帖
+	err = postService.MovePosts(srcID, targetID, postIDs)
+	if err != nil {
+		appG.Fail(nil)
+		return
+	}
+	appG.Success(nil)
 }
 
 // @Summary 获取帖子的评论
@@ -69,7 +110,7 @@ func NewPostRouter(router *gin.Engine) {
 // @Param page query page.Page false "page"
 // @Success 200 {object} app.Response
 // @Failure 500 {object} app.Response
-// @Router /v1/post/{id}/comments [get]
+// @Router /v1/posts/{id}/comments [get]
 func getPostComments(context *gin.Context) {
 	appG := app.Gin{C: context}
 	bindPage := page.BindPage(context)
@@ -99,7 +140,7 @@ func getPostComments(context *gin.Context) {
 // @Param id path string true "id"
 // @Success 200 {object} app.Response
 // @Failure 500 {object} app.Response
-// @Router /v1/post/{id} [get]
+// @Router /v1/posts/{id} [get]
 func getPost(context *gin.Context) {
 	appG := app.Gin{C: context}
 	// 请求异常处理
@@ -127,7 +168,7 @@ func getPost(context *gin.Context) {
 // @Success 200 {object} app.Response
 // @Failure 500 {object} app.Response
 // @Security ApiKeyAuth
-// @Router /v1/post [put]
+// @Router /v1/posts [put]
 func updatePost(context *gin.Context) {
 	appG := app.Gin{C: context}
 	// 请求异常处理
@@ -159,7 +200,7 @@ func updatePost(context *gin.Context) {
 // @Success 200 {object} app.Response
 // @Failure 500 {object} app.Response
 // @Security ApiKeyAuth
-// @Router /v1/post [get]
+// @Router /v1/posts [get]
 func getPostList(context *gin.Context) {
 	appG := app.Gin{C: context}
 	// 请求异常处理
@@ -232,7 +273,7 @@ type postIds struct {
 // @Success 200 {object} app.Response
 // @Failure 500 {object} app.Response
 // @Security ApiKeyAuth
-// @Router /v1/post [delete]
+// @Router /v1/posts [delete]
 func deletePost(context *gin.Context) {
 	postIds := postIds{}
 	appG := app.Gin{C: context}
@@ -265,7 +306,7 @@ func deletePost(context *gin.Context) {
 // @Success 200 {object} app.Response
 // @Failure 500 {object} app.Response
 // @Security ApiKeyAuth
-// @Router /v1/post [post]
+// @Router /v1/posts [post]
 func addPost(context *gin.Context) {
 	post := models.Post{}
 	appG := app.Gin{C: context}
