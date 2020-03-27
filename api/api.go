@@ -21,6 +21,7 @@ import (
 	v1 "github.com/opensourceai/go-api-service/api/v1"
 )
 
+// 注入结构体
 type Api struct {
 	BoardApi   *v1.BoardApi
 	PostApi    *v1.PostApi

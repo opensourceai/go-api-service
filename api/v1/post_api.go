@@ -76,18 +76,19 @@ func NewPostRouter(router *gin.Engine) {
 // @Router /v1/posts/board [put]
 func movePost(context *gin.Context) {
 	appG := app.Gin{C: context}
+
+	// 获取查询参数
 	srcID, err := app.QueryWithInt(context, "src_id")
 	if err != nil {
 		appG.Fail(nil)
 		return
 	}
 	targetID, err := app.QueryWithInt(context, "target_id")
-
 	if err != nil {
 		appG.Fail(nil)
 		return
 	}
-
+	// 绑定参数
 	postIDs := &dto.Ids{}
 	httpCode, errCode := app.BindAndValid(context, postIDs)
 	if errCode != e.SUCCESS {
@@ -95,7 +96,7 @@ func movePost(context *gin.Context) {
 		return
 	}
 	// 移动主题帖
-	err = postService.MovePosts(srcID, targetID, postIDs)
+	err = postService.ServiceMovePosts(srcID, targetID, postIDs)
 	if err != nil {
 		appG.Fail(nil)
 		return
@@ -152,7 +153,7 @@ func getPost(context *gin.Context) {
 		return
 	}
 	//userInfo := app.GetUserInfo(context)
-	post, err := postService.GetPost(id)
+	post, err := postService.ServiceGetPost(id)
 	if err != nil {
 		appG.Response(http.StatusNotFound, e.ERROR_POST_NOT_EXIST, nil)
 		return
@@ -180,7 +181,7 @@ func updatePost(context *gin.Context) {
 		return
 	}
 	userInfo := app.GetUserInfo(context)
-	if err := postService.UpdatePost(com.ToStr(userInfo.UserId), &post); err == gorm.ErrRecordNotFound {
+	if err := postService.ServiceUpdatePost(userInfo.UserId, &post); err == gorm.ErrRecordNotFound {
 		appG.Response(http.StatusNotFound, e.NOT_FOUND, nil)
 		return
 	} else if err != nil {
@@ -252,7 +253,7 @@ func getPostList(context *gin.Context) {
 	}
 	info := app.GetUserInfo(context)
 
-	if post, err := postService.GetOwnPost(pageObj, com.ToStr(info.UserId)); err != nil {
+	if post, err := postService.ServiceGetOwnPost(pageObj, com.ToStr(info.UserId)); err != nil {
 		appG.Response(http.StatusBadRequest, e.ERROR, post)
 		return
 	} else {
@@ -287,7 +288,7 @@ func deletePost(context *gin.Context) {
 	//token := context.GetHeader("Authorization")
 	//userId, exists := context.Get("userId")
 	userInfo := app.GetUserInfo(context)
-	if err := postService.DeletePost(com.ToStr(userInfo.UserId), postIds.Ids...); err != nil {
+	if err := postService.ServiceDeletePost(com.ToStr(userInfo.UserId), postIds.Ids...); err != nil {
 		if err == gorm.ErrRecordNotFound {
 			appG.Response(http.StatusBadRequest, e.ERROR_POST_NOT_EXIST, nil)
 			return
@@ -318,7 +319,7 @@ func addPost(context *gin.Context) {
 		appG.Response(httpCode, errCode, nil)
 		return
 	}
-	if err := postService.AddPost(&post); err != nil {
+	if err := postService.ServiceAddPost(&post); err != nil {
 		appG.Response(http.StatusBadRequest, e.ERROR, nil)
 		return
 	}

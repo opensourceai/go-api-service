@@ -27,6 +27,7 @@ type boardDao struct {
 	*gorm.DB
 }
 
+// 依赖注入函数
 func NewBoardDao(db *gorm.DB) (dao.BoardDao, error) {
 	return &boardDao{DB: db}, nil
 }

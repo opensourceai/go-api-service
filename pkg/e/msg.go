@@ -16,6 +16,8 @@
 
 package e
 
+// TODO:使用error改造(chenquan)
+// 业务信息
 var msgFlags = map[int]string{
 	SUCCESS:        "成功",
 	ERROR:          "失败",

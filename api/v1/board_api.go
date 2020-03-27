@@ -42,6 +42,7 @@ func NewBoardApi(service2 service.BoardService) (*BoardApi, error) {
 	return &BoardApi{}, nil
 }
 
+// 路由
 func NewBoardRouter(router *gin.Engine) {
 	broad := router.Group("/v1/broad")
 	{
@@ -75,8 +76,9 @@ func getBroadList(context *gin.Context) {
 // @Failure 500 {object} app.Response
 // @Router /v1/broad/{id} [get]
 func getBroad(context *gin.Context) {
-
 	appG := app.Gin{C: context}
+
+	// 路径参数
 	id := context.Param("id")
 	if id == "" {
 		appG.Fail(nil)
@@ -104,7 +106,6 @@ func getBroad(context *gin.Context) {
 // @Failure 500 {object} app.Response
 // @Router /v1/broad/{id}/posts [get]
 func getPostListInBroad(context *gin.Context) {
-
 	appG := app.Gin{C: context}
 
 	// 板块ID

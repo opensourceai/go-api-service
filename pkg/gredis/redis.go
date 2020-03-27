@@ -28,7 +28,7 @@ type RedisDao struct {
 	redisConn *redis.Pool
 }
 
-// Setup Initialize the Redis instance
+// redis依赖注入
 func NewRedis() (*RedisDao, func(), error) {
 	redisConn := &redis.Pool{
 		MaxIdle:     setting.RedisSetting.MaxIdle,

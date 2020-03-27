@@ -33,6 +33,7 @@ type CommentDO struct {
 	ToUser   UserDo `json:"to_user" gorm:"foreignkey:ToUserId"`
 }
 
+// 命名数据表名
 func (CommentDO) TableName() string {
 	return "comment"
 }
@@ -51,6 +52,7 @@ type UserDo struct {
 	Position    string `json:"position" grom:"column:position"`              // 职位
 }
 
+// 命名数据表名
 func (UserDo) TableName() string {
 	return "user"
 }

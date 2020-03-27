@@ -16,6 +16,7 @@
 
 package models
 
+// 数据表结构体公有数据结构
 type Model struct {
 	ID         int `gorm:"primary_key" json:"id"` // ID
 	CreatedOn  int `json:"created_on"`            // 新建时间

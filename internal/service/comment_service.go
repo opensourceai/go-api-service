@@ -26,21 +26,28 @@ import (
 	"github.com/opensourceai/go-api-service/pkg/e"
 )
 
+// wire依赖
 var ProviderComment = wire.NewSet(NewCommentService, mysql.NewCommentDao)
 
+// 依赖注入函数
 func NewCommentService(commentDao dao.CommentDao, userDao dao.UserDao, postDao dao.PostDao) (CommentService, error) {
 	return &commentService{commentDao, userDao, postDao}, nil
 }
 
+//依赖注入结构体
 type commentService struct {
 	commentDao dao.CommentDao
 	userDao    dao.UserDao
 	postDao    dao.PostDao
 }
 
+//评论service层接口
 type CommentService interface {
+	// 新增评论
 	ServiceAdd(userId int, comment *models.Comment) (err error)
+	// 评论删除某用户的评论
 	ServiceDeleteByIds(userId int, ids *dto.Ids) (err error)
+	// 修改评论
 	ServiceUpdate(userId int, comment *dto.CommentUpdateDTO) (err error)
 }
 

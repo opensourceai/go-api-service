@@ -29,10 +29,8 @@ import (
 	"net/http"
 )
 
+// 用户API依赖注入结构体
 type UserApi struct {
-}
-
-type Msg struct {
 }
 
 //1.等待注入的业务
@@ -47,6 +45,7 @@ func NewUserApi(service2 service.UserService) (*UserApi, error) {
 //3.使用wire为NewUserApi注入依赖
 var ProviderUser = wire.NewSet(NewUserApi, service.ProviderUser)
 
+// 路由
 func NewUserRouter(router *gin.Engine) {
 	user := router.Group("/v1/user")
 	user.Use(jwt.JWT())
@@ -67,7 +66,7 @@ func NewUserRouter(router *gin.Engine) {
 // @Router /v1/user [put]
 func updateUser(context *gin.Context) {
 	appG := app.Gin{C: context}
-
+	// 参数绑定
 	userDTO := &dto.UserDTO{}
 	httpCode, errCode := app.BindAndValid(context, userDTO)
 	if errCode != e.SUCCESS {
@@ -76,7 +75,7 @@ func updateUser(context *gin.Context) {
 	}
 	onlineUser := app.GetUserInfo(context)
 
-	if err := userService.UpdateUser(onlineUser, userDTO); err != nil {
+	if err := userService.ServiceUpdateUser(onlineUser, userDTO); err != nil {
 		appG.Fail(nil)
 		return
 	}
@@ -91,6 +90,7 @@ func updateUser(context *gin.Context) {
 // @Success 200 {object} app.Response
 // @Failure 500 {object} app.Response
 // @Router /v1/user/pwd [put]
+// Deprecate: 功能重复
 func updatePwd(c *gin.Context) {
 	user := models.User{}
 	//var newPwd string
@@ -101,7 +101,7 @@ func updatePwd(c *gin.Context) {
 		appG.Response(httpCode, errCode, nil)
 		return
 	}
-	if err := userService.UpdatePwd(user.Username, user.Password); err != nil {
+	if err := userService.ServiceUpdatePwd(user.Username, user.Password); err != nil {
 		logging.Error(err)
 		appG.Response(http.StatusBadRequest, e.ERROR, nil)
 		return
@@ -117,6 +117,7 @@ func updatePwd(c *gin.Context) {
 // @Success 200 {object} app.Response
 // @Failure 500 {object} app.Response
 // @Router /v1/user/message [put]
+// Deprecate: 功能重复
 func updateMsg(c *gin.Context) {
 	user := models.User{}
 
@@ -127,7 +128,7 @@ func updateMsg(c *gin.Context) {
 		appG.Response(httpCode, errCode, nil)
 		return
 	}
-	if err := userService.UpdateMsg(user.Username, &user); err != nil {
+	if err := userService.ServiceUpdateMsg(user.Username, &user); err != nil {
 		logging.Error(err)
 		appG.Response(http.StatusBadRequest, e.ERROR, nil)
 		return

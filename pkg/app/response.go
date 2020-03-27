@@ -23,6 +23,7 @@ import (
 	"github.com/opensourceai/go-api-service/pkg/e"
 )
 
+// Gin业务响应
 type Gin struct {
 	C *gin.Context
 }
@@ -33,7 +34,7 @@ type Response struct {
 	Data interface{} `json:"data"`
 }
 
-// Response setting gin.JSON
+// 返回gin.JSON
 func (g *Gin) Response(httpCode, errCode int, data interface{}) {
 	g.C.JSON(httpCode, Response{
 		Code: errCode,
@@ -42,9 +43,13 @@ func (g *Gin) Response(httpCode, errCode int, data interface{}) {
 	})
 	return
 }
+
+// 返回成功gin.JSON
 func (g *Gin) Success(data interface{}) {
 	g.Response(http.StatusOK, e.SUCCESS, data)
 }
+
+// 返回失败gin.JSON
 func (g *Gin) Fail(data interface{}) {
 	g.Response(http.StatusInternalServerError, e.ERROR, data)
 }

@@ -66,6 +66,7 @@ package e
 //503	Service Unavailable	由于超载或系统维护，服务器暂时的无法处理客户端的请求。延时的长度可包含在服务器的Retry-After头信息中
 //504	Gateway Time-out	充当网关或代理的服务器，未及时从远端服务器获取请求
 //505	HTTP Version not supported	服务器不支持请求的HTTP协议的版本，无法完成处理
+// 业务代码
 const (
 	SUCCESS        = 200
 	ERROR          = 500

@@ -27,16 +27,23 @@ import (
 	"github.com/opensourceai/go-api-service/pkg/app"
 )
 
+// 评论API注入结构体
 type CommentApi struct {
 }
 
+// wire依赖
 var ProviderComment = wire.NewSet(NewCommentService, service.ProviderComment)
+
+// 待注入的comment服务层变量
 var commentService service.CommentService
 
+// 依赖注入函数
 func NewCommentService(comment service.CommentService) (*CommentApi, error) {
 	commentService = comment
 	return &CommentApi{}, nil
 }
+
+// 路由函数
 func NewCommentRouter(router *gin.Engine) {
 	comment := router.Group("/v1/comment")
 	// 认证

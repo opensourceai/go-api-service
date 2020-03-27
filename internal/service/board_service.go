@@ -25,6 +25,7 @@ import (
 	"github.com/opensourceai/go-api-service/pkg/page"
 )
 
+// 版块service层接口
 type BoardService interface {
 	ServiceGetBoardList() (board []models.Board, err error)
 	ServiceGetPostList(id int, p *page.Page) (result *page.Result, err error)
@@ -36,8 +37,10 @@ type boardService struct {
 	*gredis.RedisDao
 }
 
+// wire依赖
 var ProviderBoard = wire.NewSet(NewBoardService, mysql.NewBoardDao, gredis.NewRedis)
 
+// 依赖注入函数
 func NewBoardService(dao2 dao.BoardDao, redisDao *gredis.RedisDao) (BoardService, error) {
 	return &boardService{dao2, redisDao}, nil
 }

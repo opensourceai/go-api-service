@@ -23,6 +23,7 @@ import (
 	"strconv"
 )
 
+// 分页
 type Page struct {
 	PageNum int    `json:"page" valid:"Min(0)"` // 页数
 	Size    int    `json:"size" valid:"Min(1)"` // 条数
@@ -30,6 +31,8 @@ type Page struct {
 	Sorter  string `json:"sorter"`              // 升序, 降序
 
 }
+
+// 分页操作
 type Option struct {
 	//Data      interface{} `json:"data"`       // 数据
 	Total     int    `json:"total"`      // 总条数
@@ -41,12 +44,14 @@ type Option struct {
 	Order     string `json:"-"`          // 排序规则
 }
 
+// 分页结果
 type Result struct {
 	*Page
 	Data interface{} `json:"data"` // 数据
 	*Option
 }
 
+// 新建分页
 func NewPage(page, size int, orderBy, sorter string) *Page {
 
 	return &Page{
@@ -56,6 +61,8 @@ func NewPage(page, size int, orderBy, sorter string) *Page {
 		Sorter:  sorter,
 	}
 }
+
+// 新建默认分页
 func NewDefaultPage(page, size int) *Page {
 	return &Page{
 		PageNum: page,

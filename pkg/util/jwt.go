@@ -30,7 +30,7 @@ type Claims struct {
 	jwt.StandardClaims
 }
 
-// GenerateToken generate tokens used for auth
+// 为用户生成JWT认证信息
 func GenerateToken(id int, username string) (string, error) {
 	nowTime := time.Now()
 	expireTime := nowTime.Add(3 * time.Hour)
@@ -48,7 +48,7 @@ func GenerateToken(id int, username string) (string, error) {
 	return token, err
 }
 
-// ParseToken parsing token
+// 解析token
 func ParseToken(token string) (*Claims, error) {
 	tokenClaims, err := jwt.ParseWithClaims(token, &Claims{}, func(token *jwt.Token) (interface{}, error) {
 		return jwtSecret, nil

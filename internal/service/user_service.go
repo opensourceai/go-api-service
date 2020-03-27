@@ -30,24 +30,31 @@ import (
 //NewUserService方法依赖mysql.NewUserDao，需要传入实现了gorm方法的结构体
 var ProviderUser = wire.NewSet(NewUserService, mysql.NewUserDao)
 
-//参数需要一个实现了UserDao接口的结构体,返回一个实现了UserDao接口的业务结构体
+//参数需要一个注入了UserDao接口的结构体,返回一个实现了UserDao接口的业务结构体
 func NewUserService(dao2 dao.UserDao) (UserService, error) {
 	return &userService{dao2}, nil
 }
 
 type UserService interface {
-	Register(user *models.User) error
-	Login(user models.User) (*models.User, bool, error)
-	UpdatePwd(username string, s string) error
-	UpdateMsg(username string, user *models.User) error
-	UpdateUser(onlineUser *app.Auth, user *dto.UserDTO) (err error)
+	// 用户注册
+	ServiceRegister(user *models.User) error
+	// 用户登录
+	ServiceLogin(user models.User) (*models.User, bool, error)
+	// 修改用户密码
+	// Deprecated: 接口重复
+	ServiceUpdatePwd(username string, s string) error
+	// 修改用户信息
+	// Deprecated: 接口重复
+	ServiceUpdateMsg(username string, user *models.User) error
+	// 修改用户信息
+	ServiceUpdateUser(onlineUser *app.Auth, user *dto.UserDTO) (err error)
 }
 
 type userService struct {
 	userDao dao.UserDao
 }
 
-func (service userService) UpdateUser(onlineUser *app.Auth, user *dto.UserDTO) (err error) {
+func (service userService) ServiceUpdateUser(onlineUser *app.Auth, user *dto.UserDTO) (err error) {
 	if onlineUser.UserId != user.ID {
 		return errors.New("用户不存在")
 	}
@@ -70,13 +77,13 @@ func (service userService) UpdateUser(onlineUser *app.Auth, user *dto.UserDTO) (
 	return service.userDao.DaoUpdate(u)
 }
 
-func (service userService) Register(user *models.User) error {
+func (service userService) ServiceRegister(user *models.User) error {
 	// 加密密码
 	user.Password = util.EncodeMD5(user.Password)
 	return service.userDao.DaoAdd(user)
 }
 
-func (service userService) Login(user models.User) (*models.User, bool, error) {
+func (service userService) ServiceLogin(user models.User) (*models.User, bool, error) {
 	err, u := service.userDao.DaoGetUserByUsername(user.Username)
 	if err != nil {
 		return nil, false, errors.New("登录失败")
@@ -89,7 +96,7 @@ func (service userService) Login(user models.User) (*models.User, bool, error) {
 	return nil, false, errors.New("登录失败")
 }
 
-func (service userService) UpdatePwd(username string, s string) error {
+func (service userService) ServiceUpdatePwd(username string, s string) error {
 	//通过用户名从数据库获取用户对象
 	_, u := service.userDao.DaoGetUserByUsername(username)
 	//修改密码
@@ -98,7 +105,7 @@ func (service userService) UpdatePwd(username string, s string) error {
 	return service.userDao.DaoEdit(&u)
 }
 
-func (service userService) UpdateMsg(username string, user *models.User) error {
+func (service userService) ServiceUpdateMsg(username string, user *models.User) error {
 	//通过用户名从数据库获取用户对象
 	_, u := service.userDao.DaoGetUserByUsername(username)
 	//修改内容

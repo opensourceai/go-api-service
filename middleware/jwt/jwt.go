@@ -27,7 +27,7 @@ import (
 	"github.com/opensourceai/go-api-service/pkg/util"
 )
 
-// JWT is jwt middleware
+//  jwt 认证中间件
 func JWT() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var code int

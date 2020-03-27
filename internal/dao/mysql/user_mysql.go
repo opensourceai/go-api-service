@@ -23,6 +23,7 @@ import (
 	"github.com/pkg/errors"
 )
 
+// 依赖注入函数
 func NewUserDao(db *gorm.DB) (dao.UserDao, error) {
 	return &userDao{db: db}, nil
 }

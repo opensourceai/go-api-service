@@ -17,6 +17,7 @@
 package models
 
 // 版块
+// 表名:hive_board
 type Board struct {
 	Model
 	Name string `json:"name" gorm:"column:name" valid:"Required"` // 名称

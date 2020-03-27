@@ -45,8 +45,9 @@ func BindAndValid(c *gin.Context, form interface{}) (httpCode, errCode int) {
 
 	return http.StatusOK, e.SUCCESS
 }
-func Valid(form interface{}) (int, int) {
 
+// 使用 validates 数据校验
+func Valid(form interface{}) (int, int) {
 	valid := validation.Validation{}
 	check, err := valid.Valid(form)
 	if err != nil {
@@ -57,9 +58,9 @@ func Valid(form interface{}) (int, int) {
 		return http.StatusBadRequest, e.INVALID_PARAMS
 	}
 	return http.StatusOK, e.SUCCESS
-
 }
 
+// 认证信息
 type Auth struct {
 	UserId   int    `json:"user_id"`
 	Username string `json:"username"`

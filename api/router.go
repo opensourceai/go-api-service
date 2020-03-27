@@ -32,7 +32,7 @@ import (
 	"github.com/opensourceai/go-api-service/pkg/upload"
 )
 
-// InitRouter initialize routing information
+// 创建路由
 func NewApi() *gin.Engine {
 	r := gin.New()
 	r.Use(gin.Logger())

@@ -25,6 +25,7 @@ import (
 	"github.com/opensourceai/go-api-service/pkg/page"
 )
 
+// 依赖注入函数
 func NewPostDao(db *gorm.DB) (dao.PostDao, error) {
 	return &postDao{DB: db}, nil
 }
@@ -78,11 +79,7 @@ func (dao postDao) GetPostComments(id int, p *page.Page) (*page.Result, error) {
 func (dao postDao) DaoGetPostAllComments(id int) (result *page.Result, err error) {
 	panic("implement me")
 }
-func (dao postDao) DaoUpdatePost(userId string, post *models.Post) (err error) {
-	// 该帖子是否属于该用户
-	if err = dao.Where("id = ? and user_id =?", post.ID, userId).Find(&models.Post{}).Error; err != nil {
-		return
-	}
+func (dao postDao) DaoUpdatePost(userId int, post *models.Post) (err error) {
 	err = dao.
 		Model(&models.Post{}).
 		Where("id = ? and user_id = ?", post.ID, userId).

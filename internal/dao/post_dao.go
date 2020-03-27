@@ -21,6 +21,7 @@ import (
 	"github.com/opensourceai/go-api-service/pkg/page"
 )
 
+// 主题帖Dao层接口
 type PostDao interface {
 	// 新增帖子
 	DaoAdd(post *models.Post) (err error)
@@ -37,7 +38,7 @@ type PostDao interface {
 	// 更新帖子
 	DaoUpdate(post *models.Post) (err error)
 	DaoGetOwnPost(p *page.Page, userId string) (result *page.Result, err error)
-	DaoUpdatePost(userId string, post *models.Post) (err error)
+	DaoUpdatePost(userId int, post *models.Post) (err error)
 	DaoGetPost(id string) (post *models.Post, err error)
 	DaoGetPostAllComments(id int) (result *page.Result, err error)
 	GetPostComments(id int, p *page.Page) (*page.Result, error)

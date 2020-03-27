@@ -21,6 +21,7 @@ import (
 	"github.com/opensourceai/go-api-service/pkg/page"
 )
 
+// 版块Dao层接口
 type BoardDao interface {
 	DaoGetBoardList() (broads []models.Board, err error)
 	DaoGetPostList(id int, page *page.Page) (result *page.Result, err error)

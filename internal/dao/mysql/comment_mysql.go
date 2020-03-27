@@ -22,6 +22,7 @@ import (
 	"github.com/opensourceai/go-api-service/internal/models"
 )
 
+// 依赖注入函数
 func NewCommentDao(db *gorm.DB) (dao.CommentDao, error) {
 	return &commentDao{db}, nil
 }

@@ -36,19 +36,23 @@ type auth struct {
 	Password string `valid:"Required; MaxSize(50)"` // 密码
 }
 
+// 认证API依赖注入结构体
 type AuthApi struct {
 }
 
+// wire依赖
 var ProviderAuth = wire.NewSet(NewAuthApi)
 
+// 依赖注入函数
 func NewAuthApi(service2 service.UserService) (*AuthApi, error) {
 	userService = service2
 	return &AuthApi{}, nil
 }
 
+// 待注入变量
 var userService service.UserService
 
-//
+// 路由
 func NewAuthRouter(router *gin.Engine) {
 	auth := router.Group("/auth")
 	{
@@ -80,7 +84,7 @@ func login(c *gin.Context) {
 		return
 	}
 
-	userFound, isExist, err := userService.Login(models.User{Username: user.Username, Password: user.Password})
+	userFound, isExist, err := userService.ServiceLogin(models.User{Username: user.Username, Password: user.Password})
 	if err != nil {
 		appG.Response(http.StatusInternalServerError, e.ERROR_AUTH_CHECK_TOKEN_FAIL, nil)
 		return
@@ -117,7 +121,7 @@ func register(c *gin.Context) {
 		appG.Response(httpCode, errCode, nil)
 		return
 	}
-	if err := userService.Register(&user); err != nil {
+	if err := userService.ServiceRegister(&user); err != nil {
 		logging.Error(err)
 		appG.Response(http.StatusBadRequest, e.ERROR, nil)
 		return

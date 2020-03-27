@@ -20,6 +20,7 @@ import (
 	"github.com/opensourceai/go-api-service/internal/models"
 )
 
+// 评论Dao层接口
 type CommentDao interface {
 	// 新增评论
 	DaoAdd(comment *models.Comment) (err error)

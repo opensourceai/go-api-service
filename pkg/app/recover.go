@@ -22,6 +22,7 @@ import (
 	"net/http"
 )
 
+// 异常恢复
 func Recover(appG *Gin) {
 	if err := recover(); err == gorm.ErrRecordNotFound.Error() {
 		appG.Response(http.StatusNotFound, e.INVALID_PARAMS, nil)

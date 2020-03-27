@@ -16,6 +16,8 @@
 
 package models
 
+// 用户
+// 表名:hive_user
 type User struct {
 	Model
 	Username    string `json:"username" grom:"column:username;not null" valid:"Required"`      // 用户名

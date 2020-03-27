@@ -17,6 +17,7 @@
 package models
 
 // 帖子
+// 表名:hive_post
 type Post struct {
 	Model
 	Title   string `json:"title" gorm:"column:title" valid:"Required"`       // 标题

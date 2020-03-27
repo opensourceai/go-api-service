@@ -16,6 +16,8 @@
 
 package models
 
+// 评论
+// 表名:hive_comment
 type Comment struct {
 	Model
 	CommentContent string `json:"comment_content"` // 评论内容

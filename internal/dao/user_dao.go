@@ -18,6 +18,7 @@ package dao
 
 import "github.com/opensourceai/go-api-service/internal/models"
 
+// 用户Dao层接口
 type UserDao interface {
 	// 添加用户
 	DaoAdd(user *models.User) error
