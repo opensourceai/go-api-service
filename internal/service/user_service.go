@@ -41,11 +41,6 @@ type UserService interface {
 	// 用户登录
 	ServiceLogin(user models.User) (*models.User, bool, error)
 	// 修改用户密码
-	// Deprecated: 接口重复
-	ServiceUpdatePwd(username string, s string) error
-	// 修改用户信息
-	// Deprecated: 接口重复
-	ServiceUpdateMsg(username string, user *models.User) error
 	// 修改用户信息
 	ServiceUpdateUser(onlineUser *app.Auth, user *dto.UserDTO) (err error)
 }
@@ -94,42 +89,4 @@ func (service userService) ServiceLogin(user models.User) (*models.User, bool, e
 		return &u, true, nil
 	}
 	return nil, false, errors.New("登录失败")
-}
-
-func (service userService) ServiceUpdatePwd(username string, s string) error {
-	//通过用户名从数据库获取用户对象
-	_, u := service.userDao.DaoGetUserByUsername(username)
-	//修改密码
-	u.Password = s
-	//调用修改用户信息方法将对象重新写入数据库，有错误就返回错误
-	return service.userDao.DaoEdit(&u)
-}
-
-func (service userService) ServiceUpdateMsg(username string, user *models.User) error {
-	//通过用户名从数据库获取用户对象
-	_, u := service.userDao.DaoGetUserByUsername(username)
-	//修改内容
-	//// 描述
-	u.Description = user.Description
-	//Description string `json:"description" grom:"column:description" valid:"MaxSize(200)"`
-	//// 性别
-	u.Sex = user.Sex
-	//Sex int `json:"sex" grom:"column:sex;not null" valid:"Min(1)"`
-	//// 头像地址
-	u.AvatarSrc = user.AvatarSrc
-	//AvatarSrc string `json:"avatar_src" grom:"column:avatar_src;not null"`
-	//// 电子邮件
-	u.Email = user.Email
-	//Email string `json:"email" grom:"column:email" valid:"Required;Email;MaxSize(100)"`
-	//// 网站
-	u.WebSite = user.WebSite
-	//WebSite string `json:"web_site" grom:"column:web_site" valid:"MaxSize(50)"`
-	//// 公司
-	u.Company = user.Company
-	//Company string `json:"company" grom:"column:company" valid:"MaxSize(50)"`
-	//// 职位
-	u.Position = user.Position
-	//Position string `json:"position" grom:"column:position" valid:"MaxSize(50)"`
-	//调用修改用户信息方法将对象重新写入数据库，有错误就返回错误
-	return service.userDao.DaoEdit(&u)
 }

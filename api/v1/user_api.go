@@ -20,13 +20,10 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/wire"
 	"github.com/opensourceai/go-api-service/api/v1/dto"
-	"github.com/opensourceai/go-api-service/internal/models"
 	"github.com/opensourceai/go-api-service/internal/service"
 	"github.com/opensourceai/go-api-service/middleware/jwt"
 	"github.com/opensourceai/go-api-service/pkg/app"
 	"github.com/opensourceai/go-api-service/pkg/e"
-	"github.com/opensourceai/go-api-service/pkg/logging"
-	"net/http"
 )
 
 // 用户API依赖注入结构体
@@ -50,8 +47,6 @@ func NewUserRouter(router *gin.Engine) {
 	user := router.Group("/v1/user")
 	user.Use(jwt.JWT())
 	{
-		user.PUT("/pwd", updatePwd)
-		user.PUT("/message", updateMsg)
 		user.PUT("", updateUser)
 	}
 }
@@ -83,56 +78,3 @@ func updateUser(context *gin.Context) {
 	appG.Success(nil)
 }
 
-// @Summary 用户密码修改
-// @Tags User
-// @Produce  json
-// @Param user body models.User true "user"
-// @Success 200 {object} app.Response
-// @Failure 500 {object} app.Response
-// @Router /v1/user/pwd [put]
-// Deprecate: 功能重复
-func updatePwd(c *gin.Context) {
-	user := models.User{}
-	//var newPwd string
-	//user.Password = newPwd
-	appG := app.Gin{C: c}
-	httpCode, errCode := app.BindAndValid(c, &user)
-	if errCode != e.SUCCESS {
-		appG.Response(httpCode, errCode, nil)
-		return
-	}
-	if err := userService.ServiceUpdatePwd(user.Username, user.Password); err != nil {
-		logging.Error(err)
-		appG.Response(http.StatusBadRequest, e.ERROR, nil)
-		return
-	}
-	appG.Response(http.StatusOK, e.SUCCESS, nil)
-
-}
-
-// @Summary 用户信息修改
-// @Tags User
-// @Produce  json
-// @Param user body models.User true "user"
-// @Success 200 {object} app.Response
-// @Failure 500 {object} app.Response
-// @Router /v1/user/message [put]
-// Deprecate: 功能重复
-func updateMsg(c *gin.Context) {
-	user := models.User{}
-
-	appG := app.Gin{C: c}
-	//页面内容绑定到user
-	httpCode, errCode := app.BindAndValid(c, &user)
-	if errCode != e.SUCCESS {
-		appG.Response(httpCode, errCode, nil)
-		return
-	}
-	if err := userService.ServiceUpdateMsg(user.Username, &user); err != nil {
-		logging.Error(err)
-		appG.Response(http.StatusBadRequest, e.ERROR, nil)
-		return
-	}
-	appG.Response(http.StatusOK, e.SUCCESS, nil)
-
-}
